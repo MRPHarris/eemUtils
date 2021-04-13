@@ -1,0 +1,24 @@
+Package: eemUtils
+Type: Package
+Title: Useful functions for working with fluorescence data under the eemR + staRdom framework.
+Version: 0.1.0.9000
+Authors@R: person("Matthew", "Harris", email = "m.r.p.harris@keele.ac.uk",
+  role = c("aut", "cre"))
+Author: Matthew Harris [aut, cre]
+Maintainer: Matthew Harris <m.r.p.harris@keele.ac.uk>
+Description: A package containing various functions for working with Excitation Emission Matrix data
+  in R, under the eemR/staRdom framework. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  staRdom,
+  eemR,
+  EEM,
+  ggplot2,
+  plotly,
+  tidyverse,
+  magrittr
+Depends: 
+    R (>= 3.1)
+RoxygenNote: 7.1.1
