@@ -49,7 +49,7 @@ existing core consistency diagnostic function
 `staRdom::eempf_corcondia()`. It produces a more legible output.
 
 <p align="center">
-<img src="man/figures/Generate_CORCONDIA_example.png" height="400px" />
+<img src="man/figures/generate_CORCONDIA_example.PNG" height="400px" />
 </p>
 
 **extrpf\_loadings**
