@@ -9,11 +9,11 @@
 The **eemUtils** package serves as a repository for various functions to
 manipulate, analyse, and plot fluorescence data. It utilises the
 existing framework provided by the packages
-[eemR](%22https://cran.r-project.org/web/packages/eemR/index.html%22)
-and [staRdom](%22https://github.com/MatthiasPucher/staRdom%22). Many of
-the functions within this package are alterations to existing functions
+[eemR](https://cran.r-project.org/web/packages/eemR/index.html) and
+[staRdom](https://github.com/MatthiasPucher/staRdom). Many of the
+functions within this package are alterations to existing functions
 within from eemR or staRdom - thus, if you use the functions from this
-pacakge, please allocate proper credit to those packages and their
+package, please allocate proper credit to those packages and their
 authors. Most eemUtils functions deal with fluorescence data, though
 some are general utility functions which, whilst a part of the
 fluorescence functions, can be used more generally.
