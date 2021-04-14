@@ -21,7 +21,8 @@ Imports:
   tidyverse,
   magrittr,
   pracma,
-  magick
+  magick,
+  data.table
 Depends: 
     R (>= 3.1)
 RoxygenNote: 7.1.1
