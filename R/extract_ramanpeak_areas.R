@@ -100,7 +100,7 @@ extract_ramanpeak_areas <- function(RAMdat, range_lower = NULL, range_upper = 50
   }
   R <- RAMmat
   # Some themes for later plots
-  theme_set(theme_cowplot(12))
+  ggplot2::theme_set(cowplot::theme_cowplot(12))
   geom.text.size = 3
   theme.size = (14/5) * geom.text.size
   inset.geom.text.size = 2

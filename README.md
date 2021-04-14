@@ -78,6 +78,8 @@ raman peaks, and exported as image and/or .gif files for visualisation.
 The below .gif shows a use of the drEEM RamanIntegrationRange method,
 using gradient detection.
 
+> placeholder
+
 ## Installation
 
 To get access to the functions in **eemUtils**, simply use the

@@ -59,10 +59,9 @@ This function incorporates two methods in order to find the area under the Raman
 Some sample Raman curve spectra are included in this package as a .csv file.
 
 
-
 `extract_ramanpeak_areas()` can then be used to get the areas under the raman peaks, and exported as image and/or .gif files for visualisation. The below .gif shows a use of the drEEM RamanIntegrationRange method, using gradient detection. 
 
-
+> placeholder
 
 
 ## Installation
