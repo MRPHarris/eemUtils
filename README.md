@@ -73,14 +73,10 @@ fluorometer, which assumes the Raman peak extends from 380nm to 410nm at
 Some sample Raman curve spectra are included in this package as a .csv
 file.
 
-> code for head(RamanCurves here)
-
 `extract_ramanpeak_areas()` can then be used to get the areas under the
 raman peaks, and exported as image and/or .gif files for visualisation.
 The below .gif shows a use of the drEEM RamanIntegrationRange method,
 using gradient detection.
-
-> .gif here
 
 ## Installation
 
