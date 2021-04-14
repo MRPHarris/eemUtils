@@ -17,6 +17,7 @@ Imports:
   EEM,
   ggplot2,
   plotly,
+  cowplot,
   tidyverse,
   magrittr
 Depends: 
