@@ -19,7 +19,9 @@ Imports:
   plotly,
   cowplot,
   tidyverse,
-  magrittr
+  magrittr,
+  pracma,
+  magick
 Depends: 
     R (>= 3.1)
 RoxygenNote: 7.1.1
