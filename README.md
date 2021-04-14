@@ -8,12 +8,13 @@
 
 The **eemUtils** package serves as a repository for various functions to
 manipulate, analyse, and plot fluorescence data. It utilises the
-existing framework provided by the packages
-[eemR](https://cran.r-project.org/web/packages/eemR/index.html) and
-[staRdom](https://github.com/MatthiasPucher/staRdom). Many of the
+existing R fluorescence analysis framework provided by the
+[eemR](https://cran.r-project.org/web/packages/eemR/index.html),
+[staRdom](https://github.com/MatthiasPucher/staRdom) and
+[EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the
 functions within this package are alterations to existing functions
-within from eemR or staRdom - thus, if you use the functions from this
-package, please allocate proper credit to those packages and their
+within from eemR, staRdom or EEM - thus, if you use the functions from
+this package, please allocate proper credit to those packages and their
 authors. Most eemUtils functions deal with fluorescence data, though
 some are general utility functions which, whilst a part of the
 fluorescence functions, can be used more generally.
@@ -122,7 +123,7 @@ devtools::install_github("MRPHarris/eemUtils")
 
 ## References
 
-Massicotte, P (2019). eemR: Tools for Pre-Processing
+Massicotte, P. (2019). eemR: Tools for Pre-Processing
 Emission-Excitation-Matrix (EEM) Fluorescence Data. R package version
 1.0.1. <https://CRAN.R-project.org/package=eemR>
 
@@ -135,3 +136,7 @@ Pucher, M., Wünsch, U., Weigelhofer, G., Murphy, K., Hein, T., &
 Graeber, D. (2019). staRdom: Versatile Software for Analyzing
 Spectroscopic Data of Dissolved Organic Matter in R. *Water*, *11*,
 2366. doi: [10.3390/w11112366](https://doi.org/10.3390/w11112366)
+
+Trivittayasil, V. (2016). EEM: Read and Preprocess Fluorescence
+Excitation-Emission Matrix (EEM) Data. R package version 1.1.1.
+<https://CRAN.R-project.org/package=EEM>

@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The **eemUtils** package serves as a repository for various functions to manipulate, analyse, and plot fluorescence data. It utilises the existing framework provided by the packages [eemR](https://cran.r-project.org/web/packages/eemR/index.html) and [staRdom](https://github.com/MatthiasPucher/staRdom). Many of the functions within this package are alterations to existing functions within from eemR or staRdom - thus, if you use the functions from this package, please allocate proper credit to those packages and their authors. Most eemUtils functions deal with fluorescence data, though some are general utility functions which, whilst a part of the fluorescence functions, can be used more generally.
+The **eemUtils** package serves as a repository for various functions to manipulate, analyse, and plot fluorescence data. It utilises the existing R fluorescence analysis framework provided by the [eemR](https://cran.r-project.org/web/packages/eemR/index.html), [staRdom](https://github.com/MatthiasPucher/staRdom) and [EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the functions within this package are alterations to existing functions within from eemR, staRdom or EEM - thus, if you use the functions from this package, please allocate proper credit to those packages and their authors. Most eemUtils functions deal with fluorescence data, though some are general utility functions which, whilst a part of the fluorescence functions, can be used more generally.
 
 This package is a work in progress - many of the functions were developed for a dataset currently in preparation for publication, and so I cannot currently upload data or detailed examples in most cases. The goal is to eventually upload that dataset and the accompanying workflow as an offshoot to this package.
 
@@ -88,9 +88,12 @@ devtools::install_github("MRPHarris/eemUtils")
 
 ## References
 
-Massicotte, P (2019). eemR: Tools for Pre-Processing Emission-Excitation-Matrix (EEM) Fluorescence Data. R
+Massicotte, P. (2019). eemR: Tools for Pre-Processing Emission-Excitation-Matrix (EEM) Fluorescence Data. R
   package version 1.0.1. https://CRAN.R-project.org/package=eemR
 
 Murphy, K. R., Stedmon, C. A., Graeber, D., & Bro, R. (2013). Fluorescence spectroscopy and multi-way techniques. PARAFAC. _Analytical Methods_, *5*, 6557–6566. doi: [10.1039/C3AY41160E](https://doi.org/10.1039/C3AY41160E)
 
 Pucher, M., Wünsch, U., Weigelhofer, G., Murphy, K., Hein, T., & Graeber, D. (2019). staRdom: Versatile Software for Analyzing Spectroscopic Data of Dissolved Organic Matter in R. _Water_, *11*, 2366. doi: [10.3390/w11112366](https://doi.org/10.3390/w11112366)
+
+Trivittayasil, V. (2016). EEM: Read and Preprocess Fluorescence Excitation-Emission Matrix (EEM) Data. R package
+  version 1.1.1. https://CRAN.R-project.org/package=EEM
