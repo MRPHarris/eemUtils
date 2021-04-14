@@ -73,12 +73,44 @@ fluorometer, which assumes the Raman peak extends from 380nm to 410nm at
 Some sample Raman curve spectra are included in this package as a .csv
 file.
 
+``` r
+library(pacman)
+pacman::p_load(eemUtils,ggplot2,cowplot,pracma,magrittr,magick)
+data(SampleRamanCurves)
+head(SampleRamanCurves)
+#>   Wavelength Spectra.1 Spectra.2 Spectra.3 Spectra.4 Spectra.5
+#> 1    246.355   0.19417   1.20432  -2.23798  -6.22403  -0.47937
+#> 2    247.477  -5.24265  -0.40144  -1.22071  -1.19693   0.23968
+#> 3    248.599  -1.94172  -1.00360   3.86560  -0.95754   0.95873
+#> 4    249.721   5.24265   1.00360  -0.61036   4.30894   4.07461
+#> 5    250.844   3.29229  -4.31084  -1.83981  -7.30603   2.16744
+#> 6    251.966   3.02511   8.04115  -1.35844 -10.92216  -4.00087
+```
+
 `extract_ramanpeak_areas()` can then be used to get the areas under the
 raman peaks, and exported as image and/or .gif files for visualisation.
 The below .gif shows a use of the drEEM RamanIntegrationRange method,
 using gradient detection.
 
-> placeholder
+``` r
+eemUtils::extract_ramanpeak_areas(RAMdat = SampleRamanCurves, range_upper = 500, method = "RIR", output_dir = NULL, gif = FALSE)
+#> Legacy peak max at em397, lying between ex370:428
+#> Registered S3 method overwritten by 'quantmod':
+#>   method            from
+#>   as.zoo.data.frame zoo
+#> [01] IR = 381:409 | Peak Area = 2000.84287218425
+#> [02] IR = 381:409 | Peak Area = 2005.96666376586
+#> [03] IR = 381:408 | Peak Area = 1995.67397722841
+#> [04] IR = 380:410 | Peak Area = 2041.30312091936
+#> [05] IR = 378:408 | Peak Area = 2041.94451089284
+```
+
+This function can also optionally produce images or a .gif of the
+detected peak bounds and areas.
+
+<p align="center">
+<img src="man/figures/Peaks_RIR.gif" height="500px" />
+</p>
 
 ## Installation
 

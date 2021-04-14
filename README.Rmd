@@ -58,10 +58,24 @@ This function incorporates two methods in order to find the area under the Raman
 
 Some sample Raman curve spectra are included in this package as a .csv file.
 
+```{r, echo = TRUE, eval = TRUE, collapse = TRUE}
+library(pacman)
+pacman::p_load(eemUtils,ggplot2,cowplot,pracma,magrittr,magick)
+data(SampleRamanCurves)
+head(SampleRamanCurves)
+```
 
 `extract_ramanpeak_areas()` can then be used to get the areas under the raman peaks, and exported as image and/or .gif files for visualisation. The below .gif shows a use of the drEEM RamanIntegrationRange method, using gradient detection. 
 
-> placeholder
+```{r, echo = TRUE, eval = TRUE, collapse = TRUE}
+eemUtils::extract_ramanpeak_areas(RAMdat = SampleRamanCurves, range_upper = 500, method = "RIR", output_dir = NULL, gif = FALSE)
+```
+
+This function can also optionally produce images or a .gif of the detected peak bounds and areas.
+
+<p align="center">
+  <img src="man/figures/Peaks_RIR.gif" height="500px" />
+</p>
 
 
 ## Installation
