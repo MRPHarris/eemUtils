@@ -70,8 +70,8 @@ straightforward, fixed-range integration used by the Aqualog
 fluorometer, which assumes the Raman peak extends from 380nm to 410nm at
 350nm excitation.
 
-Some sample Raman curve spectra are included in this package as both a
-.csv and an .rda file.
+Some sample Raman curve spectra are included in this package as a .csv
+file.
 
 > code for head(RamanCurves here)
 
