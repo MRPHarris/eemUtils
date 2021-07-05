@@ -9,13 +9,13 @@
 #' @export
 #'
 eem_read_aqualog_PEM <- function(file){
-  # Initial data read
+
   file = dat_files[1]
+
   data <- readLines(file)
   eem <- stringr::str_extract_all(data, "-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?")
   ex <- sort(as.numeric(eem[[1]]))
 
-  # data manip
   n_col <- lapply(eem, length)
   n_col <- unlist(n_col)
   expected_col <- as.numeric(names(sort(-table(n_col)))[1])
@@ -24,19 +24,18 @@ eem_read_aqualog_PEM <- function(file){
   eem <- lapply(eem, as.numeric)
   eem <- do.call(rbind, eem)
 
-
-  em <- eem[, 1] # extracting emission axis.
-  eem <- eem[, -1] # removing emission axis
+  em <- eem[, 1]
+  eem <- eem[, -1]
   # The line below replaces the hashed line after it.
   eem <- as.matrix(eem) # new as.matrix() without reversal.
   # Original as.matrix() call from eem_import_aqualog(). Led to incorrect reversal of the eem data along the excitation axis.
-  #eem2 <- as.matrix(eem[, ncol(eem):1])
+  #eem <- as.matrix(eem[, ncol(eem):1])
 
   l <- list(
     file = file,
     x = eem,
     em = em,
-    ex = ex # change made here.
+    ex = ex
   )
   return(l)
 }
