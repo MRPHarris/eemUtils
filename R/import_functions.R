@@ -10,8 +10,6 @@
 #'
 eem_read_aqualog_PEM <- function(file){
 
-  file = dat_files[1]
-
   data <- readLines(file)
   eem <- stringr::str_extract_all(data, "-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?")
   ex <- sort(as.numeric(eem[[1]]))
