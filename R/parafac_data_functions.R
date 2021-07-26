@@ -69,10 +69,8 @@ extrpf_loadings <- function(pfmodel_list, by_index = FALSE){
     }
     loadings_list[[i]] <- Loadings
   }
-  loadings_list <<- loadings_list
-  assign(paste0("Loadings_",pfmodel_name), loadings_list, envir = parent.frame())
-  rm(loadings_list, envir = parent.frame())
-  message("Success! Loadings data extracted as Loadings_",pfmodel_name,".")
+  loadings_list <- loadings_list
+  return(loadings_list)
 }
 
 #' Extract modeled spectra or EEM objects from a pfmodel list.
