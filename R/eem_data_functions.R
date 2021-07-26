@@ -210,18 +210,18 @@ eem_setNA_mod <- function(eem_list, sample = NULL, em = NULL, ex = NULL, interpo
         em_nm <- eem$em   # acquiring nearest value in table.
         dt_em <- data.table(em_nm, val = em_nm)
         setattr(dt_em, "sorted", "em_nm")
-        min_em_val <- as.numeric(dt_em[data.table(min_em), roll = "nearest"][1,2]) # Identify value closest to that specified
-        min_em_index <- as.numeric(dt_em[data.table(min_em), roll = "nearest", which = TRUE]) # index of said value
-        max_em_val <- as.numeric(dt_em[data.table(max_em), roll = "nearest"][1,2])
-        max_em_index <- as.numeric(dt_em[data.table(max_em), roll = "nearest", which = TRUE])
+        min_em_val <- as.numeric(dt_em[J(min_em), roll = "nearest"][1,2]) # Identify value closest to that specified
+        min_em_index <- as.numeric(dt_em[J(min_em), roll = "nearest", which = TRUE]) # index of said value
+        max_em_val <- as.numeric(dt_em[J(max_em), roll = "nearest"][1,2])
+        max_em_index <- as.numeric(dt_em[J(max_em), roll = "nearest", which = TRUE])
         em <- eem$em[min_em_index:max_em_index]
         em2 <- which(eem$em %in% em)}  # new em comprised of actual values
       if(length(em) == 1){
         em_nm <- eem$em
         dt_em <- data.table(em_nm, val = em_nm)
         setattr(dt_em, "sorted", "em_nm")
-        em_val <- as.numeric(dt_em[data.table(em), roll = "nearest"][1,2])
-        em_index <- as.numeric(dt_em[data.table(em), roll = "nearest", which = TRUE])
+        em_val <- as.numeric(dt_em[J(em), roll = "nearest"][1,2])
+        em_index <- as.numeric(dt_em[J(em), roll = "nearest", which = TRUE])
         em2 <- which(eem$em %in% em)}
       eem$x[em2, ex2] <- NA
     }
