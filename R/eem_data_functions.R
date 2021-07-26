@@ -200,9 +200,7 @@ eem_setNA_mod <- function(eem_list, sample = NULL, em = NULL, ex = NULL, interpo
     if (eem$sample %in% sample) {
       if (is.null(ex)){
         ex2 <- 1:ncol(eem$x)
-      } else {
-        (ex2 <- which(eem$ex %in% ex))
-      }
+      } else (ex2 <- which(eem$ex %in% ex))
       if (is.null(em)){
         em2 <- 1:nrow(eem$x)
       }
@@ -391,6 +389,3 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
   rm(normalised_eemlist, envir = parent.frame())  # remove repeat data
   message("Normalisation complete")
 }
-
-
-
