@@ -187,6 +187,8 @@ eem_range_mod <- function(eemlist, ex_range, em_range){
 #' @param ex optional, excitation wavelengths to set NA
 #' @param interpolate FALSE, 1 or 2, interpolate NAs or not, 2 different methods.
 #'
+#' @import data.table
+#'
 #' @export
 #'
 eem_setNA_mod <- function(eem_list, sample = NULL, em = NULL, ex = NULL, interpolate = FALSE){
