@@ -34,7 +34,7 @@ save_eemlist_csvs <- function(eemlist,outputfolder = NULL, append_name = NULL){
 #' @param x The target dataframe.
 #' @param sample Sample/EEM name.
 #' @param location Optional; where is the EEM from
-#' @param filename Full file name and path of the EEM.
+#' @param file Full file name and path of the EEM.
 #' @param ex Which side is the excitation axis on - columns, or rows?
 #'
 #' @export

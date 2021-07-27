@@ -4,20 +4,14 @@
 \alias{data_frame_to_eem}
 \title{Attempt to convert a raw EEM data dataframe to an eemR-compliant object of class 'eem'.}
 \usage{
-data_frame_to_eem(
-  x,
-  sample = NULL,
-  filename = NULL,
-  location = NULL,
-  ex = "cols"
-)
+data_frame_to_eem(x, file = NULL, sample = NULL, location = NULL, ex = "cols")
 }
 \arguments{
 \item{x}{The target dataframe.}
 
-\item{sample}{Sample/EEM name.}
+\item{file}{Full file name and path of the EEM.}
 
-\item{filename}{Full file name and path of the EEM.}
+\item{sample}{Sample/EEM name.}
 
 \item{location}{Optional; where is the EEM from}
 
