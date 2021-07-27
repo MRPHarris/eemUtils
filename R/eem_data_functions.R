@@ -39,7 +39,7 @@ save_eemlist_csvs <- function(eemlist,outputfolder = NULL, append_name = NULL){
 #'
 #' @export
 #'
-data_frame_to_eem <- function(x, file = NULL, sample = NULL, file = NULL, location = NULL, ex = 'cols'){
+data_frame_to_eem <- function(x, file = NULL, sample = NULL, location = NULL, ex = 'cols'){
   if(!(ex == 'cols' || ex == 'rows')){
     stop("ex must be either 'cols' or 'rows'")
   }
