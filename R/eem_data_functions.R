@@ -39,14 +39,14 @@ save_eemlist_csvs <- function(eemlist,outputfolder = NULL, append_name = NULL){
 #'
 #' @export
 #'
-data_frame_to_eem <- function(x, sample = NULL, filename = NULL, location = NULL, ex = 'cols'){
+data_frame_to_eem <- function(x, file = NULL, sample = NULL, file = NULL, location = NULL, ex = 'cols'){
   if(!(ex == 'cols' || ex == 'rows')){
     stop("ex must be either 'cols' or 'rows'")
   }
   eem <- vector(mode = 'list', length = 6)
   names(eem) <- c("file","sample","x","ex","em","location")
   # 6 parts to the list.
-  eem[["file"]] <- filename
+  eem[["file"]] <- file
   eem[["location"]] <- location
   eem[["sample"]] <- sample
   eem[["x"]] <- as.matrix(x)
