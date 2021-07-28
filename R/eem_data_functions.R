@@ -391,8 +391,6 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
     save_eemlist_csvs(normalised_eemlist, outputfolder = outputfolder, append_name = append_name) #save eemlist
   }
   # Outputs
-  normalised_eemlist <<- normalised_eemlist
-  assign(paste0(deparse(substitute(eemlist)), append_name_forlist), normalised_eemlist,  envir = parent.frame())  # new name for eemlist based upon input eemlist
-  rm(normalised_eemlist, envir = parent.frame())  # remove repeat data
+  return(normalised_eemlist)
   message("Normalisation complete")
 }
