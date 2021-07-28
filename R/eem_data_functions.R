@@ -101,11 +101,16 @@ eem_neg_to_0 <- function(eemlist, outputfolder = NULL){
   for(i in seq_along(EEMs_NoNeg)){                                         # main for loop
     eem_ungathered <- as.data.frame(EEMs_NoNeg[[i]], gather = FALSE)       # extract EEM, don't gather
     eem_ungathered[,][eem_ungathered[,] <0] <- 0                        # set all values less than 0 in EEM to 0
+    eemre <- data_frame_to_eem(eem_ungathered,
+                      file = EEMs_NoNeg[[i]][['file']],
+                      sample = EEMs_NoNeg[[i]][['sample']],
+                      location = EEMs_NoNeg[[i]][['location']])
+    EEMs_NoNeg[[i]] <- eemre
     if(!is.null(outputfolder)){
       write.csv(eem_ungathered, file = paste0(outputfolder,EEMs_NoNeg[[i]][["sample"]],"_noneg.csv"), row.names = TRUE) # Export EEM with iterative naming scheme.
     }
   }
-  EEMs_NoNeg <- EEMs_NoNeg
+  EEMs_NoNeg
 }
 
 #' Change wavelength range of eems with in an eemlist.
