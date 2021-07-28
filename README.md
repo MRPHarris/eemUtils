@@ -6,31 +6,25 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The **eemUtils** package serves as a repository for various functions to
-manipulate, analyse, and plot fluorescence data. It utilises the
-existing R fluorescence analysis framework provided by the
-[eemR](https://cran.r-project.org/web/packages/eemR/index.html),
+The **eemUtils** package is a repository for useful functions that aid
+in the processing of Excitation-Emission-Matrix (EEM) fluorescence data.
+It utilises the existing R fluorescence analysis framework provided by
+the [eemR](https://cran.r-project.org/web/packages/eemR/index.html),
 [staRdom](https://github.com/MatthiasPucher/staRdom) and
 [EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the
 functions within this package are alterations to existing functions
 within from eemR, staRdom or EEM - thus, if you use the functions from
 this package, please allocate proper credit to those packages and their
-authors. Most eemUtils functions deal with fluorescence data, though
-some are general utility functions which, whilst a part of the
-fluorescence functions, can be used more generally.
+authors.
 
-This package is a work in progress - many of the functions were
-developed for a dataset currently in preparation for publication, and so
-I cannot currently upload data or detailed examples in most cases. The
-goal is to eventually upload that dataset and the accompanying workflow
-as an offshoot to this package.
+This package is a work in progress. Always back up your data!
 
 If you have any questions or comments, please don’t hesitate to get in
 touch.
 
 ## Example functions
 
-Below are just a few of the 20+ functions contained within this package.
+Below are some examples of functions within this package.
 
 #### plot\_eem\_3D
 
@@ -75,6 +69,7 @@ Some sample Raman curve spectra are included in this package as below.
 
 ``` r
 library(pacman)
+#> Warning: package 'pacman' was built under R version 4.0.5
 pacman::p_load(eemUtils,ggplot2,cowplot,pracma,magrittr,magick)
 data(SampleRamanCurves)
 head(SampleRamanCurves)
