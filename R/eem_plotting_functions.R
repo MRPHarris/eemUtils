@@ -38,7 +38,7 @@ check_eem <- function(eemlist, contour = TRUE, eem_number = 1, output_dir = NULL
 #'
 #' @export
 #'
-plot_eem_3D <- function (eem, origin = "csv"){
+plot_eem_3D <- function (eem, origin = "DAT"){
   if(!(origin == "DAT" || origin == "csv")){
     warning("please specify an origin for the eem: either 'csv' or 'DAT'")
   }
