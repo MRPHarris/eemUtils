@@ -34,6 +34,7 @@ Generate_CORCONDIA <- function(pfmodel,eemlist){
   if (any (Core_Consistencies <= 75)){
     message(" ------ \n","Warning: One or more of the models had a CCD <=75. This could indicate under-fitting of components.") # Warning message if CCD <=75
   }
+  return(Core_Consistencies)
 }
 
 #' Extract fluorescence intensity loadings from a list of PARAFAC models.
