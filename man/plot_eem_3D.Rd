@@ -4,7 +4,7 @@
 \alias{plot_eem_3D}
 \title{Plot an EEM object in 3D using plotly.}
 \usage{
-plot_eem_3D(eem, origin = "csv")
+plot_eem_3D(eem, origin = "DAT")
 }
 \arguments{
 \item{eem}{An eem object, compliant with the eemR/staRdom packages.}
