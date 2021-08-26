@@ -77,7 +77,7 @@ plot_eem_3D <- function (eem, origin = "DAT"){
 #'
 #' @param eemlist the target eemlist object compliant with the staRdom/eemR framework.
 #' @param contour TRUE/FALSE to add contour to EEM.
-#' @param output_dir full path to the destination folder.
+#' @param output_dir full path to the destination folder. If NULL, images will be sent to the working directory.
 #'
 #' @export
 #'

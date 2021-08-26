@@ -179,3 +179,41 @@ peak_positions <- function(modeled_spectra){
   peak_list <- peak_list
 }
 
+#' Derive the per-component percentage intensity contribution
+#'
+#' @description Determine the per-sample percentage contribution of each PARAFAC component
+#'       across a given set of sample PARAFAC intensity loadings.
+#'
+#' @param loadings An output data frame from extrpf_loadings().
+#'
+#' @export
+#'
+get_pfload_percent <- function(loadings){
+  ## n components
+  ncomps <- as.numeric(length(unlist(which(grepl("Comp",colnames(loadings))))))
+  ## which components are present, and in what columns do they lie?
+  col_comps <- which(grepl("Comp",colnames(loadings)))
+  what_comps <- unlist(lapply(str_split(colnames(loadings[col_comps]),"[.]"),"[[",2))
+  # Colnames
+  cnames_comps <- paste0("Percent_C",seq(1,ncomps,1))
+  cnames <- c("Sample_Name",cnames_comps,"index")
+  # Init empty frame
+  pct_frame <- data.frame(matrix(nrow = nrow(loadings), ncol = length(cnames), data = NA))
+  colnames(pct_frame) <- cnames
+
+  # Assign sample names and indices
+  pct_frame$Sample_Name <- loadings$Sample_Name
+  pct_frame$index <- loadings$index
+
+  # Total fluorescence
+  fl_total <- rowSums(loadings[,col_comps])
+  # Percent iteration loop
+  it_list <- vector(mode = "list", length = ncomps)
+  for(i in seq_along(it_list)){
+    comp_it_pct <- (loadings[,col_comps[i]]/fl_total)*100
+    pct_frame[,(1+i)] <- comp_it_pct
+  }
+  # Export data frame
+  pct_frame
+}
+
