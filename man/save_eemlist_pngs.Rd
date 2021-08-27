@@ -11,7 +11,7 @@ save_eemlist_pngs(eemlist, contour = FALSE, output_dir = NULL)
 
 \item{contour}{TRUE/FALSE to add contour to EEM.}
 
-\item{outpud_dir}{full path to the destination folder.}
+\item{output_dir}{full path to the destination folder. If NULL, images will be sent to the working directory.}
 }
 \description{
 loop through an eemlist, saving EEM data as individual .png images.
