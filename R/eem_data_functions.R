@@ -431,5 +431,38 @@ eemlist_average <- function(eemlist){
     new_eemlist[[1]] <- averaged_eem
     return(new_eemlist)
   }
+}
 
+#' Takes a data frame and attempts to coerce it to an EEM object of the style used by EEM/eemR/staRdom.
+#'
+#' @description An alternative to eemR's eem constructor. Mirrored across from the SampleQueue package utility functions. Required for eemlist_average().
+#'
+#' @param eemdf the dataframe to be coerced to an EEM object.
+#' @param file filename of the EEM, if applicable.
+#' @param sample the samplename of the EEM, if applicable.
+#' @param location the location of the EEM file, if applicable.
+#'
+#' @noRd
+eemdf_to_eem <- function(eemdf,
+                         file,
+                         sample,
+                         location){
+  # code adapted from staRdom's .eem_csv importer.
+  x <- eemdf
+  ex <- colnames(x)[] %>% as.numeric()
+  em <- rownames(x) %>% as.numeric()
+  x <- x[,] %>% as.matrix() %>% unname()
+  x <- x[!is.na(em),!is.na(ex)]
+  ex <- ex[!is.na(ex)]
+  em <- em[!is.na(em)]
+  l <- list(
+    file = file,
+    sample = sample,
+    x = x,
+    ex = ex,
+    em = em,
+    location = location
+  )
+  class(l) <- "eem"
+  return(l)
 }
