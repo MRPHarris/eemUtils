@@ -29,6 +29,22 @@ If you have any questions or comments, I can be reached at m.r.p.harris@keele.ac
 
 Below are some examples of functions within this package.
 
+#### ggeem2
+
+An updated EEM plotter, directly adapted from staRdom's ggeem. It retains much of the same functionality, but is intended for direct use with publication-style figues, losing the title and some other elements. It has integrated options for binning, and the default colour scheme takes after MATLAB's jet scheme. 
+
+```{r, echo = FALSE, eval = TRUE, collapse = TRUE}
+pacman::p_load(eemUtils,staRdom,eemR,ggplot2,cowplot,pracma,magrittr,magick,tidyverse)
+#data(ILSMBT_36_eem_average)
+ILSMBT_36_eem_average <- (function(...)get(data(...,envir = new.env())))("ILSMBT_36_eem_average")
+intp_eem <- eemUtils::interpolate_eem(ILSMBT_36_eem_average, n_pp = 2)
+p1 <- ggeem2(ILSMBT_36_eem_average, bin_vals = FALSE, contour = TRUE, legend = FALSE, title_text = "Black Tea 36-EEM Average (contours)")
+p2 <- ggeem2(intp_eem, bin_vals = TRUE, contour = FALSE, legend = FALSE, title_text = "Black Tea 36-EEM Average (interpolated and binned, no contours)")
+cowplot::plot_grid(p1,p2,
+                   ncol = 2, nrow = 1)
+
+```
+
 #### plot_eem_3D
 
 A simple conversion of `staRdom::eempf_comps3D()`, but for use with sample EEM data, rather than outputs from a PARAFAC model. Extremely useful when checking individual samples for the presence of scatter lines or artefacts, or for quickly identifying the point of maximum fluorescence within part of an EEM.

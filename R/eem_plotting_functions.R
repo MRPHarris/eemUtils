@@ -128,6 +128,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #'
 ggeem2 <- function(eem,
                    fill_max = FALSE,
+                   title_text = NULL,
                    bin_vals = 12,
                    colpal = "12pal",
                    contour = TRUE,
@@ -256,12 +257,25 @@ ggeem2 <- function(eem,
         scale_y_continuous(expand = c(0,0))
     }
   }
-  # Final plot thematic elemenst.
+  # Title handling.
+  if(!is.null(title_text)){
+    plot <- plot +
+      labs(title = title_text) +
+      theme(
+        plot.title = element_text(hjust = 0.5,
+                                  size = 11*textsize_multiplier,
+                                  face = "bold")
+      )
+  } else {
+    plot <- plot +
+      theme(
+        plot.title = element_blank()
+      )
+  }
+  # Final thematic elements.
   plot <- plot +
-    labs(title = NULL) +
     theme(
       panel.background = element_rect(fill = 'white', colour = 'black'),
-      plot.title = element_blank(),
       strip.background = element_blank(),
       strip.text = element_blank(),
       axis.text = element_text(size = 9*textsize_multiplier),
@@ -277,6 +291,11 @@ ggeem2 <- function(eem,
       theme(
         legend.position = "none"
       )
-  }
+  } #else {   # Unhash this code if you would like a nested legend.
+    #plot <- plot +
+    #  theme(
+    #    legend.position = c(0.9,0.2)
+    #  )
+  #}
   plot
 }

@@ -411,7 +411,7 @@ eemlist_average <- function(eemlist){
 #'
 #' @export
 #'
-interpolate_eem <- function(eem, n_pp = 2, direction = "ex"){
+interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
   #eem = DSS0506_MBT_eems_avg[[1]]
   #n_pp = 2
   #direction = "ex"
@@ -527,7 +527,9 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex"){
       if(i == 1){
         colnames(eem_df_ug_tofill) <- ex_scan_it_extrap$x
       }
-      message("finished loop ",i,"/",length(it_list))
+      if(isTRUE(verbose)){
+        message("finished loop ",i,"/",length(it_list))
+      }
     }
   }
   eem_extrap <- eemdf_to_eem(eemdf = eem_df_ug_tofill,
