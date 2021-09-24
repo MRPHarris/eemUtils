@@ -7,6 +7,7 @@
 ggeem2(
   eem,
   fill_max = FALSE,
+  title_text = NULL,
   bin_vals = 12,
   colpal = "12pal",
   contour = TRUE,

@@ -28,12 +28,11 @@ Below are some examples of functions within this package.
 
 #### ggeem2
 
-An updated EEM plotter, directly adapted from staRdom’s ggeem. It
-retains much of the same functionality, but is intended for direct use
-with publication-style figues, losing the title and some other elements.
-It has integrated options for binning, and the default colour scheme
-takes after MATLAB’s jet scheme. Below are two examples, using some
-Black Tea OM SRM.
+An updated EEM plotter, directly adapted from `staRdom::ggeem()`. It
+retains much of the same functionality, with tweaked graphical elements.
+Designed for use in my thesis and future pubs. It has integrated options
+for binning, and the default colour scheme takes after MATLAB’s ‘jet’
+scheme. Below are two examples, using some Black Tea OM SRM.
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 

@@ -4,7 +4,7 @@
 \alias{interpolate_eem}
 \title{Add data points between existing values across a specified EEM axis.}
 \usage{
-interpolate_eem(eem, n_pp = 2, direction = "ex")
+interpolate_eem(eem, n_pp = 2, direction = "ex", verbose = FALSE)
 }
 \arguments{
 \item{eem}{An eem object compliant with the staRdom/eemR framework.}

@@ -31,7 +31,7 @@ Below are some examples of functions within this package.
 
 #### ggeem2
 
-An updated EEM plotter, directly adapted from staRdom's ggeem. It retains much of the same functionality, but is intended for direct use with publication-style figues, losing the title and some other elements. It has integrated options for binning, and the default colour scheme takes after MATLAB's jet scheme. Below are two examples, using some Black Tea OM SRM.
+An updated EEM plotter, directly adapted from `staRdom::ggeem()`. It retains much of the same functionality, with tweaked graphical elements. Designed for use in my thesis and future pubs. It has integrated options for binning, and the default colour scheme takes after MATLAB's 'jet' scheme. Below are two examples, using some Black Tea OM SRM.
 
 ```{r, echo = FALSE, eval = TRUE, collapse = TRUE,warning = FALSE}
 pacman::p_load(eemUtils,staRdom,eemR,ggplot2,cowplot,pracma,magrittr,magick,tidyverse)

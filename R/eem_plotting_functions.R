@@ -141,7 +141,9 @@ ggeem2 <- function(eem,
     stop("Please provide an object of class 'eem'")
   }
   if(colpal[1] == "12pal"){
-    colpal <- (function(...)get(data(...,envir = new.env())))("eem_palette_12") # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
+    #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
+    data("eem_palette_12")
+    colpal <- eem_palette_12
     message("Using default colour palette")
   } else if(colpal[1] == "rainbow"){
     colpal <- rainbow(75)[53:1]
@@ -164,7 +166,7 @@ ggeem2 <- function(eem,
   }
   if(isTRUE(bin_vals)){
     message("binning vals based on a max EEM intensity of ",max(eem$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-    eem_df <- eem_bin(eem = eem,
+    eem_df <- eemUtils::eem_bin(eem = eem,
                       nbins = length(colpal))
   } else {
     eem_df <- as.data.frame(eem)
