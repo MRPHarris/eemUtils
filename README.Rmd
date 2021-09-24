@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The **eemUtils** package is a repository for useful functions that aid in the processing and visualisation of Excitation-Emission-Matrix (EEM) fluorescence data. It utilises the existing R fluorescence analysis framework provided by the [eemR](https://cran.r-project.org/web/packages/eemR/index.html), [staRdom](https://github.com/MatthiasPucher/staRdom) and [EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the functions within this package are alterations or wrappers for existing functions from eemR, staRdom or EEM - thus, if you use the functions from this package, please allocate proper credit to those packages and their authors.
+The **eemUtils** package is a collection of useful functions that act as an expansion of the existing existing R fluorescence analysis framework provided by the [eemR](https://cran.r-project.org/web/packages/eemR/index.html), [staRdom](https://github.com/MatthiasPucher/staRdom) and [EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the functions within this package are alterations or wrappers for existing functions from eemR, staRdom or EEM - thus, if you use the functions from this package, please allocate proper credit to those packages and their authors. 
 
 This package is a work in progress. Always back up your data! 
 
@@ -89,6 +89,10 @@ To get access to the functions in **eemUtils**, simply use the **devtools** pack
 ```r
 devtools::install_github("MRPHarris/eemUtils")
 ```
+
+## Update Notes
+
+23/09/21 | An updated ggplot2-compatible EEM plotter, ggeem2(), has been added. This function updates the plotting provided by staRdom's ggeem() function, tweaking the graphical parameters and adding an option for intensity value binning via eem_bin(). The check_eem() function has been removed, as it is no longer useful. 
 
 ## References
 

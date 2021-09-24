@@ -6,10 +6,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The **eemUtils** package is a repository for useful functions that aid
-in the processing and visualisation of Excitation-Emission-Matrix (EEM)
-fluorescence data. It utilises the existing R fluorescence analysis
-framework provided by the
+The **eemUtils** package is a collection of useful functions that act as
+an expansion of the existing existing R fluorescence analysis framework
+provided by the
 [eemR](https://cran.r-project.org/web/packages/eemR/index.html),
 [staRdom](https://github.com/MatthiasPucher/staRdom) and
 [EEM](https://CRAN.R-project.org/package=EEM) packages. Many of the
@@ -126,6 +125,14 @@ To get access to the functions in **eemUtils**, simply use the
 ``` r
 devtools::install_github("MRPHarris/eemUtils")
 ```
+
+## Update Notes
+
+23/09/21 \| An updated ggplot2-compatible EEM plotter, ggeem2(), has
+been added. This function updates the plotting provided by staRdom’s
+ggeem() function, tweaking the graphical parameters and adding an option
+for intensity value binning via eem\_bin(). The check\_eem() function
+has been removed, as it is no longer useful.
 
 ## References
 

@@ -1,34 +1,5 @@
 # These functions relate to the plotting of excitation-emission matrices.
 
-#' Visually check individual EEMs within an eemlist.
-#'
-#' @description Display and/or export a single EEM, for inspection/checking purposes.
-#'
-#' @param eemlist A list of EEMs, compliant with the eemR/staRdom framework.
-#' @param contour TRUE/FALSE to show contours on plot.
-#' @param eem_number The number of the eem to plot.
-#' @param output_dir Directory to send a .png of the plot to. If no export is desired, leave as NULL.
-#'
-#' @export
-#'
-check_eem <- function(eemlist, contour = TRUE, eem_number = 1, output_dir = NULL){
-  EEM_Name = eemlist[[eem_number]][["sample"]]
-  print(EEM_Name)
-  message(paste0("EEM ",eem_number,"/",length(eemlist)))
-  Target_eemlist <- vector("list", 1)
-  Target_eemlist[[1]] <- eemlist[[eem_number]]
-  output_dir = output_dir
-  if(!(is.null(output_dir))){
-    png(paste0(output_dir,EEM_Name,".png"), units="cm", width=18, height=14, res=300)
-    print(eem_overview_plot(Target_eemlist, contour = contour)) # change here to output contours in .png EEMs
-    dev.off()
-  } else(
-    message("no output directory defined; png not exported")
-  )
-  print(eem_overview_plot(Target_eemlist, contour = contour))
-  Target_eemlist <<- Target_eemlist
-}
-
 #' Plot an EEM object in 3D using plotly.
 #'
 #' @description A conversion of staRdom::eempf_comps3D(), applied to EEM objects.
@@ -137,4 +108,175 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
     message("no output directory defined; png not exported")
   )
   print(eem_overview_plot(group_eemlist[1:6], spp = 6, contour = contour))
+}
+
+#' A tweaked EEM plotter, building off of ggeem() from staRdom()
+#'
+#' @description An update to staRdom's existing EEM plotter, ggeem. Option for binning values,
+#'      along with new colours amongst other things.
+#'
+#' @param eem An eem object compliant with the staRdom/eemR framework
+#' @param bin_vals NULL or numeric for number of bins. If no binning is desired, set to NULL. Defaults to 12, the length of the default colour palette, eem_palette_12.
+#' @param colpal Provide a colour palette as a vector of colours. Two defaults are available - "12pal" for a 12-colour palette based on MATLAB's jet scheme, or "rainbow" for ggeem's default scheme.
+#' @param contour TRUE/FALSE to plot contour
+#' @param interpolate TRUE/FALSE to interpolate. Fairly certain this is defunct; refer to ?staRdom::ggeem()
+#' @param redneg refer to ?staRdom::ggeem()
+#' @param legend TRUE/FALSE to display legend
+#' @param textsize_multiplier a simple numeric multiplier for increasing text size of graphical elements. To help with R's tricky graphics device text scaling when exporting.
+#'
+#' @export
+#'
+ggeem2 <- function(eem,
+                   fill_max = FALSE,
+                   bin_vals = 12,
+                   colpal = "12pal",
+                   contour = TRUE,
+                   interpolate = FALSE,
+                   redneg = NULL,
+                   legend = TRUE,
+                   textsize_multiplier = 1,...)
+{
+  if(!is(eem,"eem")){
+    stop("Please provide an object of class 'eem'")
+  }
+  if(colpal[1] == "12pal"){
+    colpal <- (function(...)get(data(...,envir = new.env())))("eem_palette_12") # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
+    message("Using default colour palette")
+  } else if(colpal[1] == "rainbow"){
+    colpal <- rainbow(75)[53:1]
+    message("Using rainbow colour palette")
+  } else if(!is.vector(colpal)) {
+    stop("Please provide a vector of colours, or use the defaults!")
+  }
+  # slit dimensions
+  x_slit_min = eem$ex[2] - eem$ex[1]
+  x_slit_max = eem$ex[length(eem$ex)] - eem$ex[length(eem$ex)-1]
+  y_slit_min = eem$em[2] - eem$em[1]
+  y_slit_max = eem$em[length(eem$em)] - eem$em[length(eem$em)-1]
+  # panel border rectangle
+  rect <- data.frame(
+    x = c(min(eem$ex),min(eem$ex),max(eem$ex),max(eem$ex)),
+    y = c(min(eem$em),max(eem$em),min(eem$em),max(eem$em))
+  )
+  if(!is.null(redneg)){
+    warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
+  }
+  if(isTRUE(bin_vals)){
+    message("binning vals based on a max EEM intensity of ",max(eem$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+    eem_df <- eem_bin(eem = eem,
+                      nbins = length(colpal))
+  } else {
+    eem_df <- as.data.frame(eem)
+  }
+  eem_df$value <- as.numeric(as.character(eem_df$value)) # Just in case there are factors carrying over from eem_bin
+  eem_df$ex <- as.numeric(eem_df$ex)
+  eem_df$em <- as.numeric(eem_df$em)
+  table <- as.data.frame(eem_df)
+  if(!is.numeric(fill_max)){
+    fill_max <- table$value %>% max(na.rm=TRUE)
+  }
+  # These lines will fail if the raster package is loaded. Fixed by specifying dplyr for select.
+  diffs <- table %>%
+    dplyr::select(-value) %>%
+    gather("spec","wl", -sample) %>%
+    group_by(sample,spec) %>%
+    unique() %>%
+    #arrange(sample,spec,wl) %>%
+    #mutate(diffs = wl - lag(wl))
+    summarise(slits = diff(wl) %>% n_distinct()) %>%
+    .$slits != 1
+  # Plotting
+  plot <- table %>%
+    ggplot(aes(x = ex, y = em, z = value))+
+    labs(x = "Excitation (nm)", y = "Emission (nm)")
+  if(any(diffs)){
+    plot <- plot +
+      layer(mapping = aes(colour = value, fill = value),
+            geom = "tile", stat = "identity", position = "identity")
+  } else {
+    plot <- plot +
+      layer(mapping = aes(fill = value),
+            geom = "raster", stat = "identity", position = "identity")
+  }
+  plot <- plot +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+    facet_wrap(~ sample)
+  if(contour){
+    plot <- plot +
+      geom_contour(colour = "white", size = 0.2, alpha = 0.5)
+  }
+  # Binned? Discrete scale.
+  if(isTRUE(bin_vals)){
+    if(table$value %>% min(na.rm=TRUE) < 0){
+      ## Vals for breaks if using bins. Lots of lines because this was a nightmare to wrap my tiny brain around.
+      vals_test <- unique(table$value, na.rm = TRUE)[which(!is.na(unique(table$value, na.rm = TRUE)))]
+      vals_test_break = append(diff(vals_test),diff(vals_test)[length(diff(vals_test))], after = length(diff(vals_test)))
+      vals_shift <- vals_test - (vals_test_break/2)
+      vals_shift <- vals_shift[-1]
+      vals_test_endbreak_half <- (vals_test_break/2)[length(vals_test_break)]
+      vals_shift <- append(vals_shift, (vals_shift[length(vals_shift)] + vals_test_endbreak_half), after = length(vals_shift))
+      vals_shift <- round(vals_shift,2)
+      vals_labels <- round(vals_test,2)
+      # Adaptive shifting in case of length mismatch.
+      if(length(colpal) < length(vals_labels)){
+        vals_labels <- vals_labels[-1]
+        vals_shift <- vals_shift[-length(vals_shift)]
+      }
+      plot <- plot +
+        scale_fill_stepsn(colours = colpal, breaks = vals_shift, labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                          na.value="white") +
+        scale_colour_stepsn(colours = colpal, breaks = vals_shift,labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                            na.value="white") +
+        scale_x_continuous(expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0))
+    } else {
+      plot <- plot +
+        scale_fill_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white")+
+        scale_colour_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white") +
+        scale_x_continuous(expand = c(0,0), limits = c(min(eem$ex), 440)) +
+        scale_y_continuous(expand = c(0,0), limits = c(min(eem$em), 550))
+    }
+  } else {
+    # Not binned - continuous scale.
+    if(table$value %>% min(na.rm=TRUE) < 0){
+      vals <- c(table$value %>% min(na.rm = TRUE), seq(from = 0, to = fill_max, length.out = length(colpal) - 1))
+      vals <- (vals - min(vals))/diff(range(vals))
+      plot <- plot +
+        scale_fill_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                             na.value="white")+
+        scale_colour_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                               na.value="white") +
+        scale_x_continuous(expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0))
+    } else {
+      plot <- plot +
+        scale_fill_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white")+
+        scale_colour_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white") +
+        scale_x_continuous(expand = c(0,0)) +
+        scale_y_continuous(expand = c(0,0))
+    }
+  }
+  # Final plot thematic elemenst.
+  plot <- plot +
+    labs(title = NULL) +
+    theme(
+      panel.background = element_rect(fill = 'white', colour = 'black'),
+      plot.title = element_blank(),
+      strip.background = element_blank(),
+      strip.text = element_blank(),
+      axis.text = element_text(size = 9*textsize_multiplier),
+      axis.title = element_text(size = 10*textsize_multiplier)
+    )
+  # Border rectangle
+  plot  <- plot +
+    annotate(geom = "rect", xmin = min(eem$ex)-(x_slit_min/2), xmax = max(eem$ex)+(x_slit_max/2), ymin = min(eem$em)-(y_slit_min/2), ymax = max(eem$em)+(y_slit_max/2),
+             colour = "black", fill = "white", alpha = 0, size = 0.5)
+  # Legend removal
+  if(!isTRUE(legend)){
+    plot <- plot +
+      theme(
+        legend.position = "none"
+      )
+  }
+  plot
 }

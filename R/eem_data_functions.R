@@ -27,40 +27,6 @@ save_eemlist_csvs <- function(eemlist,outputfolder = NULL, append_name = NULL){
   message("Done!")
 }
 
-#' Attempt to convert a raw EEM data dataframe to an eemR-compliant object of class 'eem'.
-#'
-#' @description Takes a data frame (e.g. raw EEM data) and attempts to coerce it into an eem object compliant with the eemR/staRdom framework.
-#'
-#' @param x The target dataframe.
-#' @param sample Sample/EEM name.
-#' @param location Optional; where is the EEM from
-#' @param file Full file name and path of the EEM.
-#' @param ex Which side is the excitation axis on - columns, or rows?
-#'
-#' @export
-#'
-data_frame_to_eem <- function(x, file = NULL, sample = NULL, location = NULL, ex = 'cols'){
-  if(!(ex == 'cols' || ex == 'rows')){
-    stop("ex must be either 'cols' or 'rows'")
-  }
-  eem <- vector(mode = 'list', length = 6)
-  names(eem) <- c("file","sample","x","ex","em","location")
-  # 6 parts to the list.
-  eem[["file"]] <- file
-  eem[["location"]] <- location
-  eem[["sample"]] <- sample
-  eem[["x"]] <- as.matrix(x)
-  if(ex == 'cols'){
-    eem[["ex"]] <- as.numeric(colnames(x))
-    eem[["em"]] <- as.numeric(rownames(x))
-  } else{
-    eem[["ex"]] <- as.numeric(rownames(x))
-    eem[["em"]] <- as.numeric(colnames(x))
-  }
-  e <- function(y){structure(y,class = 'eem')}
-  eem <- e(eem)
-}
-
 #' Set all instances of '0'/zero to NA within a list of EEMs.
 #'
 #' @description Go through a list of eemR/staRdom-compliant EEMs, and replace all
@@ -433,36 +399,269 @@ eemlist_average <- function(eemlist){
   }
 }
 
-#' Takes a data frame and attempts to coerce it to an EEM object of the style used by EEM/eemR/staRdom.
+#' Add data points between existing values across a specified EEM axis.
 #'
-#' @description An alternative to eemR's eem constructor. Mirrored across from the SampleQueue package utility functions. Required for eemlist_average().
+#' @description Interpolate between existing eem data points, adding values across a given axis.
+#'     Intended for data to be plotted, as an alternative to staRdom's eem_smooth() smoothing function.
+#'     Support only for excitation axis at this stage. Not to be confused with staRdom's eem_interp.
+#'
+#' @param eem An eem object compliant with the staRdom/eemR framework.
+#' @param n_pp numeric; how many data points to add between existing ones?
+#' @param Direction "ex" only.
+#'
+#' @export
+#'
+interpolate_eem <- function(eem, n_pp = 2, direction = "ex"){
+  #eem = DSS0506_MBT_eems_avg[[1]]
+  #n_pp = 2
+  #direction = "ex"
+  if(!is(eem,"eem")){
+    stop("Please provide an object of class 'eem'")
+  }
+  eem_df_ug <- as.data.frame(eem, gather = FALSE)
+  #eem_df_ug_tofill <- data.frame(matrix(NA, nrow = nrow(eem_df_ug), ncol = ncol(eem_df_ug)))
+  #rownames(eem_df_ug_tofill) <- rownames(eem_df_ug)
+  #colnames(eem_df_ug_tofill) <- colnames(eem_df_ug)
+  if(direction == "ex"){
+    # create new EEM frame to fill.
+    eem_df_ug_tofill <- data.frame(matrix(NA, nrow = nrow(eem_df_ug), ncol = (ncol(eem_df_ug)*n_pp)-ceiling(n_pp/2)))
+    rownames(eem_df_ug_tofill) <- rownames(eem_df_ug)
+    min_ex <- as.numeric(min(colnames(eem_df_ug)))
+    max_ex <- as.numeric(max(colnames(eem_df_ug)))
+    # Iterate along emission axis, deriving excitation scans.
+    it_list <- vector(mode = "list", length = nrow(eem_df_ug))
+    for(i in seq_along(it_list)){
+      ## Derive ex scan for this iteration
+      # ex scan
+      ex_scan_it <- as.numeric(eem_df_ug[i,])
+      ex_scan_it_exvals <- colnames(eem_df_ug)
+      ex_scan_it_df <- as.data.frame(matrix(NA, ncol = 2, nrow = length(ex_scan_it)))
+      colnames(ex_scan_it_df) <- c("x","y")
+      #ex_scan_it_df$x <- seq(1,length(ex_scan_it),1)
+      ex_scan_it_df$x <- ex_scan_it_exvals
+      ex_scan_it_df$y <- ex_scan_it
+      #plot(ex_scan_it_df, type = 'p')
+      ## Interpolate this ex scan.
+      ex_width <- as.numeric(ex_scan_it_df$x[2]) - as.numeric(ex_scan_it_df$x[1])
+      ex_scan_it_extrap <- as.data.frame(approx(x = ex_scan_it_df$x,
+                                                y = ex_scan_it_df$y,
+                                                n = (length(ex_scan_it)*n_pp)-1,
+                                                xout = seq(min(ex_scan_it_df$x),max(ex_scan_it_df$x), ex_width/n_pp)))
+      #plot(ex_scan_it_extrap, type = 'p')
+      ## Where should the NAs be?
+      ## Direct matching
+      NA_rows <- as.numeric(ex_scan_it_df$x[which(is.na(ex_scan_it_df$y))])
+      # Are there NA rows?
+      if(length(NA_rows) > 0){
+        # are there gaps?
+        gaps <- (NA_rows - lag(NA_rows, default = 0))[-1]
+        gap <- which(gaps > ex_width)+1
+        if(length(gap) > 0){
+          # There are multiple NA areas. 2 max; no support for non-RM missing areas.
+          list_it <- vector(mode = "list", length = length(gap)+1)
+          # Iterate through each NA section.
+          for(g in seq_along(list_it)){
+            if(g == 1){
+              NA_rows_a <- NA_rows[1:gap-1]
+              # first iteration
+              NA_rows_start <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(min(NA_rows_a))))
+              NA_rows_end <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(max(NA_rows_a))))
+              # Need to expand this by half the n_pp value to ensure the rayleigh NA remain as before.
+              if(NA_rows_start == 1){
+                NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+              } else {
+                NA_rows_start <- NA_rows_start - ceiling(n_pp/2)
+                NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+              }
+              # generate these row indices
+              rows <- seq(NA_rows_start,NA_rows_end,1)
+              # set these rows to NA
+              ex_scan_it_extrap$y[rows] <- NA
+            } else {
+              NA_rows_a <- NA_rows[gap:length(NA_rows)]
+              # first iteration
+              NA_rows_start <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(min(NA_rows_a))))
+              NA_rows_end <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(max(NA_rows_a))))
+              # Need to expand this by half the n_pp value to ensure the rayleigh NA remain as before.
+              if(NA_rows_start == 1){
+                NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+              } else {
+                # what if the last NA row is the end of the ex scan?
+                if(ex_scan_it_extrap$x[NA_rows_end] == max_ex){
+                  NA_rows_start <- NA_rows_start - ceiling(n_pp/2)
+                } else {
+                  NA_rows_start <- NA_rows_start - ceiling(n_pp/2)
+                  NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+                }
+              }
+            }
+            # generate these row indices
+            rows <- seq(NA_rows_start,NA_rows_end,1)
+            # set these rows to NA
+            ex_scan_it_extrap$y[rows] <- NA
+          }
+        } else {
+          ## Where are the NA's going to end up in the extrapolated dataset?
+          NA_rows_start <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(min(NA_rows))))
+          NA_rows_end <- as.numeric(which(ex_scan_it_extrap$x == as.numeric(max(NA_rows))))
+          # Need to expand this by half the n_pp value to ensure the rayleigh NA remain as before.
+          if(NA_rows_start == 1){
+            NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+          } else {
+            # what if the last NA row is the end of the ex scan?
+            if(ex_scan_it_extrap$x[NA_rows_end] == max_ex){
+              NA_rows_start <- NA_rows_start - ceiling(n_pp/2)
+            } else {
+              NA_rows_start <- NA_rows_start - ceiling(n_pp/2)
+              NA_rows_end <- NA_rows_end + ceiling(n_pp/2)
+            }
+          }
+          # generate these row indices
+          rows <- seq(NA_rows_start,NA_rows_end,1)
+          # set these rows to NA
+          ex_scan_it_extrap$y[rows] <- NA
+        }
+      }
+      # Add extrapolated scan to the frame
+      eem_df_ug_tofill[i,] <- ex_scan_it_extrap$y
+      if(i == 1){
+        colnames(eem_df_ug_tofill) <- ex_scan_it_extrap$x
+      }
+      message("finished loop ",i,"/",length(it_list))
+    }
+  }
+  eem_extrap <- eemdf_to_eem(eemdf = eem_df_ug_tofill,
+                             file = eem$file,
+                             sample = eem$sample,
+                             location = eem$location)
+  return(eem_extrap)
+}
+
+#' Convert a dataframe to an EEM object of the style used by EEM/eemR/staRdom.
+#'
+#' @description An alternative to eemR's eem constructor. Intended to reverse as.data.frame(eem).
 #'
 #' @param eemdf the dataframe to be coerced to an EEM object.
 #' @param file filename of the EEM, if applicable.
 #' @param sample the samplename of the EEM, if applicable.
 #' @param location the location of the EEM file, if applicable.
+#' @param gathered TRUE/FALSE is the eemdf in a short (not gathered; FALSE) or a long (gathered; TRUE) format?
 #'
-#' @noRd
+#' @export
+#'
 eemdf_to_eem <- function(eemdf,
                          file,
                          sample,
-                         location){
+                         location,
+                         gathered = FALSE){
   # code adapted from staRdom's .eem_csv importer.
   x <- eemdf
-  ex <- colnames(x)[] %>% as.numeric()
-  em <- rownames(x) %>% as.numeric()
-  x <- x[,] %>% as.matrix() %>% unname()
-  x <- x[!is.na(em),!is.na(ex)]
-  ex <- ex[!is.na(ex)]
-  em <- em[!is.na(em)]
-  l <- list(
-    file = file,
-    sample = sample,
-    x = x,
-    ex = ex,
-    em = em,
-    location = location
-  )
-  class(l) <- "eem"
-  return(l)
+  if(!isTRUE(gathered)){
+    # The eem is in a short, non-gathered format.
+    ex <- colnames(x)[] %>% as.numeric()
+    em <- rownames(x) %>% as.numeric()
+    x <- x[,] %>% as.matrix() %>% unname()
+    x <- x[!is.na(em),!is.na(ex)]
+    ex <- ex[!is.na(ex)]
+    em <- em[!is.na(em)]
+    l <- list(
+      file = file,
+      sample = sample,
+      x = x,
+      ex = ex,
+      em = em,
+      location = location
+    )
+    class(l) <- "eem"
+    return(l)
+  } else {
+    # The eem is in a long or 'gathered' format.
+    gath_df <- eemdf
+    gath_df$value <- as.numeric(as.character(gath_df$value)) # factor management
+    if("sample" %in% colnames(gath_df)){
+      gath_df <- subset(gath_df, select = -c(sample))
+    }
+    if(colnames(gath_df)[3] == "z"){
+      gath_df_short <- spread(data = gath_df, key = "ex", value = "z")
+    } else {
+      gath_df_short <- spread(data = gath_df, key = "ex", value = "value")
+    }
+    rnames <- as.matrix(gath_df_short[,1])
+    rownames(gath_df_short) <- as.numeric(rnames)
+    gath_df_short <- select(gath_df_short, -c(1))
+    eem <- eemdf_to_eem(eemdf = gath_df_short,
+                        file = file,
+                        sample = sample,
+                        location = location,
+                        gathered = FALSE)
+    return(eem)
+  }
 }
+
+#' Bin the intensity values from an EEM.
+#'
+#' @description Takes the intensity values of an EEM and bins them based upon a preset number of
+#'        bins. The lowest break-end is the smallest intensity value, and the highest will be Inf, such
+#'        that the top bin is
+#'        (max intensity - ((max intensity)/nbins)):Inf
+#'
+#' @param eem An eem object, compliant with the eemR/staRdom packages.
+#' @param nbins The number of bins. 12 by default.
+#'
+#' @export
+#'
+eem_bin <- function(eem,
+                    nbins = 12){
+  if(!is(eem,"eem")){
+    stop("Please use an object of class 'eem'.")
+  }
+  eemdf <- as.data.frame(eem, gather = TRUE)
+  if(colnames(eemdf)[3] != "value"){
+    stop("Please use a gathered EEM dataframe returned by as.data.frame(eem, gather = TRUE)")
+  }
+  eemdf$value <- as.numeric(eemdf$value)
+  max_eem_val <- max(eemdf$value, na.rm = TRUE)
+  bin1 <- max_eem_val/(nbins)
+  intensity_breaks <- seq(0,max_eem_val-bin1,bin1)
+  intensity_breaks <- append(intensity_breaks, Inf, after = length(intensity_breaks))
+  intensity_breaks <- append(intensity_breaks, min(eemdf$value, na.rm = TRUE), after = 0)
+  intensity_labels <- head(intensity_breaks, -1)
+  #intensity_labels <- intensity_breaks
+  setDT(eemdf)
+  setDT(eemdf)[ , intensitygroups := cut(value,
+                                         breaks = intensity_breaks,
+                                         right = FALSE,
+                                         labels = intensity_labels)]
+  eemdf$value <- as.numeric(as.character(eemdf$intensitygroups))
+  eemdf_2 <- subset(eemdf, select = -c(intensitygroups))
+  return(eemdf_2)
+}
+
+
+#' Get the max intensity value's ex/em position.
+#'
+#' @description Get the excitation/emission coordinates of the point of maximum fluorescence
+#'      intensity within the target EEM.
+#'
+#' @param eem an eem object compliant with the staRdom/eemR framework
+#' @param verbose TRUE/FALSE to return a message with the identified max position.
+#'
+#' @export
+#'
+get_eem_max_coords <- function(eem, verbose = FALSE){
+  eem_df <- as.data.frame(eem)
+  # row of max value
+  maxval <- max(eem_df$value, na.rm = TRUE)
+  maxrow <- as.numeric(as.character(which.max(eem_df$value)))
+  max_ex <- as.numeric(as.character(eem_df$ex[maxrow]))
+  max_em <- as.numeric(as.character(eem_df$em[maxrow]))
+  maxrowvals <- data.frame(matrix(NA,nrow = 1, ncol = 3))
+  colnames(maxrowvals) <- c("em","ex","value")
+  maxrowvals[1,1:3] <- c(max_em,max_ex,maxval)
+  #maxrowvals <- eem_df[maxrow,1:3]
+  if(isTRUE(verbose)){
+    message("Max Intensity at ex",max_ex," em",max_em," | value = ",maxval)
+  }
+  return(maxrowvals)
+}
+
