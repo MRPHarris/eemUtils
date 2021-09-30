@@ -136,20 +136,6 @@ ggeem2 <- function(eem,
                    redneg = NULL,
                    legend = TRUE,
                    textsize_multiplier = 1,...){
-  #eem = PHSC02600rePEM
-  #fill_max = FALSE
-  #title_text = NULL
-  #bin_vals = 12
-  #colpal = "12pal"
-  # contour = TRUE
-  #interpolate = FALSE
-  #redneg = NULL
-  #legend = TRUE
-  #textsize_multiplier = 1
-
-
-
-
   if(!is(eem,"eem")){
     stop("Please provide an object of class 'eem'")
   }
@@ -298,7 +284,8 @@ ggeem2 <- function(eem,
       strip.background = element_blank(),
       strip.text = element_blank(),
       axis.text = element_text(size = 9*textsize_multiplier),
-      axis.title = element_text(size = 10*textsize_multiplier)
+      axis.title = element_text(size = 10*textsize_multiplier),
+      legend.text = element_test(size = 9*textsize_multiplier)
     )
   # Border rectangle
   plot  <- plot +
