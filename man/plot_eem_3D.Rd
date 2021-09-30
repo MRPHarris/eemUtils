@@ -4,12 +4,14 @@
 \alias{plot_eem_3D}
 \title{Plot an EEM object in 3D using plotly.}
 \usage{
-plot_eem_3D(eem, origin = "DAT")
+plot_eem_3D(eem, origin = "DAT", colour = "default")
 }
 \arguments{
 \item{eem}{An eem object, compliant with the eemR/staRdom packages.}
 
 \item{origin}{How was this eem imported? One of 'csv' (generic) or 'DAT' (Aqualog import)}
+
+\item{colour}{One of "default", "rainbow", or a user-supplied vector of hexadecimal colours.}
 }
 \description{
 A conversion of staRdom::eempf_comps3D(), applied to EEM objects.

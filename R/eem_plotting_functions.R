@@ -6,10 +6,11 @@
 #'
 #' @param eem An eem object, compliant with the eemR/staRdom packages.
 #' @param origin How was this eem imported? One of 'csv' (generic) or 'DAT' (Aqualog import)
+#' @param colour One of "default", "rainbow", or a user-supplied vector of hexadecimal colours.
 #'
 #' @export
 #'
-plot_eem_3D <- function (eem, origin = "DAT"){
+plot_eem_3D <- function (eem, origin = "DAT", colour = "default"){
   if(!(origin == "DAT" || origin == "csv")){
     warning("please specify an origin for the eem: either 'csv' or 'DAT'")
   }
@@ -37,7 +38,19 @@ plot_eem_3D <- function (eem, origin = "DAT"){
     yaxis = list(
       title = "ex",
       autorange = "reversed"))
-  plotly::plot_ly(x = em, y = ex, z = z, colors = rainbow (12)[9:1]) %>%
+  if(colour == "default"){
+    data("eem_palette_12")
+    colpal <- eem_palette_12
+    if(sum(eem$x < 0) == 0){
+      newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
+      colpal <- newpal(12)
+    }
+  } else if(colour == "rainbow"){
+    colpal <- rainbow(12)[9:1]
+  } else {
+    colpal <- colour
+  }
+  plotly::plot_ly(x = em, y = ex, z = z, colors = colpal) %>%
     plotly::layout(scene = scene) %>%
     plotly::add_surface()
 }
@@ -239,8 +252,8 @@ ggeem2 <- function(eem,
       plot <- plot +
         scale_fill_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white")+
         scale_colour_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white") +
-        scale_x_continuous(expand = c(0,0), limits = c(min(eem$ex), 440)) +
-        scale_y_continuous(expand = c(0,0), limits = c(min(eem$em), 550))
+        scale_x_continuous(expand = c(0,0))+#, limits = c(min(eem$ex))) +
+        scale_y_continuous(expand = c(0,0))#, limits = c(min(eem$em)))
     }
   } else {
     # Not binned - continuous scale.
