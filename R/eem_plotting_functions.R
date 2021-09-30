@@ -135,8 +135,21 @@ ggeem2 <- function(eem,
                    interpolate = FALSE,
                    redneg = NULL,
                    legend = TRUE,
-                   textsize_multiplier = 1,...)
-{
+                   textsize_multiplier = 1,...){
+  #eem = PHSC02600rePEM
+  #fill_max = FALSE
+  #title_text = NULL
+  #bin_vals = 12
+  #colpal = "12pal"
+  # contour = TRUE
+  #interpolate = FALSE
+  #redneg = NULL
+  #legend = TRUE
+  #textsize_multiplier = 1
+
+
+
+
   if(!is(eem,"eem")){
     stop("Please provide an object of class 'eem'")
   }
@@ -145,6 +158,10 @@ ggeem2 <- function(eem,
     data("eem_palette_12")
     colpal <- eem_palette_12
     message("Using default colour palette")
+    if(sum(eem$x < 0) == 0){
+      newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
+      colpal <- newpal(12)
+    }
   } else if(colpal[1] == "rainbow"){
     colpal <- rainbow(75)[53:1]
     message("Using rainbow colour palette")
@@ -167,7 +184,7 @@ ggeem2 <- function(eem,
   if(isTRUE(bin_vals)){
     message("binning vals based on a max EEM intensity of ",max(eem$x, na.rm = TRUE), " and ",length(colpal)," bins.")
     eem_df <- eemUtils::eem_bin(eem = eem,
-                      nbins = length(colpal))
+                                nbins = length(colpal))
   } else {
     eem_df <- as.data.frame(eem)
   }
@@ -294,10 +311,11 @@ ggeem2 <- function(eem,
         legend.position = "none"
       )
   } #else {   # Unhash this code if you would like a nested legend.
-    #plot <- plot +
-    #  theme(
-    #    legend.position = c(0.9,0.2)
-    #  )
+  #plot <- plot +
+  #  theme(
+  #    legend.position = c(0.9,0.2)
+  #  )
   #}
   plot
 }
+
