@@ -285,7 +285,8 @@ ggeem2 <- function(eem,
       strip.text = element_blank(),
       axis.text = element_text(size = 9*textsize_multiplier),
       axis.title = element_text(size = 10*textsize_multiplier),
-      legend.text = element_text(size = 9*textsize_multiplier)
+      legend.text = element_text(size = 9*textsize_multiplier),
+      legend.title = element_text(size = 10*textsize_multiplier)
     )
   # Border rectangle
   plot  <- plot +
