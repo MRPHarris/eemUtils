@@ -191,7 +191,7 @@ ggeem2.data.frame <- function(data,
                               title_text = NULL,
                               bin_vals = NULL,
                               colpal = "12pal",
-                              contour = TRUE,
+                              contour = FALSE,
                               interpolate = FALSE,
                               redneg = NULL,
                               legend = TRUE,
@@ -503,7 +503,7 @@ ggeem2_multi <- function(data,
     facet_wrap(~ sample)
   if(contour){
     plot <- plot +
-      geom_contour(colour = "black", size = 0.3)
+      geom_contour(colour = "white", size = 0.2, alpha = 0.5)
   }
   if(table$value %>% min(na.rm=TRUE) < 0){
     vals <- c(table$value %>% min(na.rm = TRUE), seq(from = 0, to = fill_max, length.out = length(colpal) - 1))
