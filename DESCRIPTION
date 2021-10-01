@@ -22,7 +22,8 @@ Imports:
   magrittr,
   pracma,
   magick,
-  data.table
+  data.table,
+  dplyr
 Depends: 
   R (>= 3.1)
 RoxygenNote: 7.1.1

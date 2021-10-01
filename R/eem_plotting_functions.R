@@ -129,7 +129,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #'      along with new colours amongst other things.
 #'
 #' @param eem An eem object compliant with the staRdom/eemR framework
-#' @param bin_vals NULL or numeric for number of bins. If no binning is desired, set to NULL. Defaults to 12, the length of the default colour palette, eem_palette_12.
+#' @param bin_vals Three routes here. NULL for no bins. "colpal" to match the number of bins to the length of the colour palette. Alternatively, provide a numeric value for the number of bins you would like.
 #' @param colpal Provide a colour palette as a vector of colours. Two defaults are available - "12pal" for a 12-colour palette based on MATLAB's jet scheme, or "rainbow" for ggeem's default scheme.
 #' @param contour TRUE/FALSE to plot contour
 #' @param interpolate TRUE/FALSE to interpolate. Fairly certain this is defunct; refer to ?staRdom::ggeem()
@@ -137,7 +137,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #' @param legend TRUE/FALSE to display legend
 #' @param textsize_multiplier a simple numeric multiplier for increasing text size of graphical elements. To help with R's tricky graphics device text scaling when exporting.
 #'
-#' @import ggplot2 dplyr tidyr eemR
+#' @import ggplot2 tidyr eemR
 #' @importFrom grDevices rainbow
 #'
 #' @export
@@ -188,7 +188,7 @@ ggeem2.parafac <- function(data, fill_max = FALSE, ...)
 ggeem2.data.frame <- function(data,
                                  fill_max = FALSE,
                                  title_text = NULL,
-                                 bin_vals = 12,
+                                 bin_vals = NULL,
                                  colpal = "12pal",
                                  contour = TRUE,
                                  interpolate = FALSE,
@@ -230,10 +230,19 @@ ggeem2.data.frame <- function(data,
   if(!is.null(redneg)){
     warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
   }
-  if(isTRUE(bin_vals)){
-    message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-    eem_df <- eemUtils::eem_bin(eem = eem_constructed,
-                                nbins = length(colpal))
+  if(!is.null(bin_vals)){
+    if(bin_vals == "colpal"){
+      message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+      eem_df <- eemUtils::eem_bin(eem = eem_constructed,
+                                  nbins = length(colpal))
+    } else {
+      if(!is(bin_vals, "numeric")){
+        stop("If setting number of bins, please provide a numeric value")
+      }
+      message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+      eem_df <- eemUtils::eem_bin(eem = eem_constructed,
+                                  nbins = bin_vals)
+    }
   } else {
     eem_df <- eem
   }

@@ -23,7 +23,7 @@ ggeem2(data, fill_max = FALSE, ...)
   data,
   fill_max = FALSE,
   title_text = NULL,
-  bin_vals = 12,
+  bin_vals = NULL,
   colpal = "12pal",
   contour = TRUE,
   interpolate = FALSE,
@@ -34,7 +34,7 @@ ggeem2(data, fill_max = FALSE, ...)
 )
 }
 \arguments{
-\item{bin_vals}{NULL or numeric for number of bins. If no binning is desired, set to NULL. Defaults to 12, the length of the default colour palette, eem_palette_12.}
+\item{bin_vals}{Three routes here. NULL for no bins. "colpal" to match the number of bins to the length of the colour palette. Alternatively, provide a numeric value for the number of bins you would like.}
 
 \item{colpal}{Provide a colour palette as a vector of colours. Two defaults are available - "12pal" for a 12-colour palette based on MATLAB's jet scheme, or "rainbow" for ggeem's default scheme.}
 
