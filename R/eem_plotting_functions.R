@@ -159,7 +159,7 @@ ggeem2.eemlist <- function(data, fill_max = FALSE, eemlist_order = TRUE, ...)
     table$sample <- table$sample %>%
       factor(levels = table$sample %>% unique())
   }
-  ggeem2(table, fill_max = fill_max ,...)
+  ggeem2(table, fill_max = fill_max, n_eems = as.numeric(length(data)))
 }
 
 #' @rdname ggeem2
@@ -202,7 +202,7 @@ ggeem2.data.frame <- function(data,
     data("eem_palette_12")
     colpal <- eem_palette_12
     message("Using default colour palette")
-    if(sum(data$x < 0, na.rm = TRUE) == 0){
+    if(sum(data$value < 0, na.rm = TRUE) == 0){
       newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
       colpal <- newpal(12)
     }
@@ -212,6 +212,7 @@ ggeem2.data.frame <- function(data,
   } else if(!is.vector(colpal)) {
     stop("Please provide a vector of colours, or use the defaults!")
   }
+  # Single vs multiple EEM handling.
   if(n_eems == 0){
     stop("n_eems set to 0. Please provide a number of eems")
   } else if(n_eems == 1){
@@ -240,7 +241,7 @@ ggeem2.data.frame <- function(data,
                          interpolate = interpolate,
                          redneg = redneg,
                          legend = legend,
-                         textsize_multiplier = textsize_multiplier,...)
+                         textsize_multiplier = textsize_multiplier)
     plot
   }
 }
