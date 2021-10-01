@@ -614,10 +614,11 @@ eemdf_to_eem <- function(eemdf,
 #'
 eem_bin <- function(eem,
                     nbins = 12){
-  if(!is(eem,"eem")){
-    stop("Please use an object of class 'eem'.")
+  if(is(eem,"data.frame")){
+    eemdf <- eem
+  } else if(is(eem, "eem")){
+    eemdf <- as.data.frame(eem, gather = TRUE)
   }
-  eemdf <- as.data.frame(eem, gather = TRUE)
   if(colnames(eemdf)[3] != "value"){
     stop("Please use a gathered EEM dataframe returned by as.data.frame(eem, gather = TRUE)")
   }
@@ -626,14 +627,17 @@ eem_bin <- function(eem,
   bin1 <- max_eem_val/(nbins)
   intensity_breaks <- seq(0,max_eem_val-bin1,bin1)
   intensity_breaks <- append(intensity_breaks, Inf, after = length(intensity_breaks))
-  intensity_breaks <- append(intensity_breaks, min(eemdf$value, na.rm = TRUE), after = 0)
+  if(sum(eem$value < 0, na.rm = TRUE) != 0){
+    # handling for negative values
+    intensity_breaks <- append(intensity_breaks, min(eemdf$value, na.rm = TRUE), after = 0)
+  }
   intensity_labels <- head(intensity_breaks, -1)
   #intensity_labels <- intensity_breaks
-  setDT(eemdf)
-  setDT(eemdf)[ , intensitygroups := cut(value,
-                                         breaks = intensity_breaks,
-                                         right = FALSE,
-                                         labels = intensity_labels)]
+  data.table::setDT(eemdf)
+  data.table::setDT(eemdf)[ , intensitygroups := cut(value,
+                                                     breaks = intensity_breaks,
+                                                     right = FALSE,
+                                                     labels = intensity_labels)]
   eemdf$value <- as.numeric(as.character(eemdf$intensitygroups))
   eemdf_2 <- subset(eemdf, select = -c(intensitygroups))
   return(eemdf_2)

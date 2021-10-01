@@ -2,15 +2,31 @@
 % Please edit documentation in R/eem_plotting_functions.R
 \name{ggeem2}
 \alias{ggeem2}
-\title{A tweaked EEM plotter, building off of ggeem() from staRdom()}
+\alias{ggeem2.default}
+\alias{ggeem2.eemlist}
+\alias{ggeem2.eem}
+\alias{ggeem2.parafac}
+\alias{ggeem2.data.frame}
+\title{A tweaked EEM plotter, building on ggeem() from staRdom(). For more detailed information, refer to ?staRdom::ggeem()}
 \usage{
-ggeem2(
-  eem,
+ggeem2(data, fill_max = FALSE, ...)
+
+\method{ggeem2}{default}(data, fill_max = FALSE, ...)
+
+\method{ggeem2}{eemlist}(data, fill_max = FALSE, eemlist_order = TRUE, ...)
+
+\method{ggeem2}{eem}(data, fill_max = FALSE, ...)
+
+\method{ggeem2}{parafac}(data, fill_max = FALSE, ...)
+
+\method{ggeem2}{data.frame}(
+  data,
+  n_eems = 1,
   fill_max = FALSE,
   title_text = NULL,
-  bin_vals = 12,
+  bin_vals = NULL,
   colpal = "12pal",
-  contour = TRUE,
+  contour = FALSE,
   interpolate = FALSE,
   redneg = NULL,
   legend = TRUE,
@@ -19,9 +35,7 @@ ggeem2(
 )
 }
 \arguments{
-\item{eem}{An eem object compliant with the staRdom/eemR framework}
-
-\item{bin_vals}{NULL or numeric for number of bins. If no binning is desired, set to NULL. Defaults to 12, the length of the default colour palette, eem_palette_12.}
+\item{bin_vals}{Three routes here. NULL for no bins. "colpal" to match the number of bins to the length of the colour palette. Alternatively, provide a numeric value for the number of bins you would like.}
 
 \item{colpal}{Provide a colour palette as a vector of colours. Two defaults are available - "12pal" for a 12-colour palette based on MATLAB's jet scheme, or "rainbow" for ggeem's default scheme.}
 
@@ -34,8 +48,10 @@ ggeem2(
 \item{legend}{TRUE/FALSE to display legend}
 
 \item{textsize_multiplier}{a simple numeric multiplier for increasing text size of graphical elements. To help with R's tricky graphics device text scaling when exporting.}
+
+\item{eem}{An eem object compliant with the staRdom/eemR framework}
 }
 \description{
 An update to staRdom's existing EEM plotter, ggeem. Option for binning values,
-     along with new colours amongst other things.
+     along with new colours.
 }
