@@ -41,7 +41,7 @@ plot_eem_3D <- function (eem, origin = "DAT", colour = "default"){
   if(colour == "default"){
     data("eem_palette_12")
     colpal <- eem_palette_12
-    if(sum(eem$x < 0) == 0){
+    if(sum(eem$x < 0, na.rm = TRUE) == 0){
       newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
       colpal <- newpal(12)
     }
