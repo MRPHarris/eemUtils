@@ -221,6 +221,12 @@ ggeem2.data.frame <- function(data,
     ### SINGLE EEM PLOTTING.
     ##
     ## Bin support.
+    eem <- data
+    eem_constructed <- eemdf_to_eem(eemdf = eem,
+                                    file = NULL,
+                                    sample = NULL,
+                                    location = NULL,
+                                    gathered = TRUE)
     if(colpal[1] == "12pal"){
       #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
       data("eem_palette_12")
