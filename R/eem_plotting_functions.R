@@ -202,7 +202,7 @@ ggeem2.data.frame <- function(data,
     data("eem_palette_12")
     colpal <- eem_palette_12
     message("Using default colour palette")
-    if(sum(eem$x < 0, na.rm = TRUE) == 0){
+    if(sum(data$x < 0, na.rm = TRUE) == 0){
       newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
       colpal <- newpal(12)
     }
