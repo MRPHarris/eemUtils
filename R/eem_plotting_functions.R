@@ -126,7 +126,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #' A tweaked EEM plotter, building on ggeem() from staRdom(). For more detailed information, refer to ?staRdom::ggeem()
 #'
 #' @description An update to staRdom's existing EEM plotter, ggeem. Option for binning values,
-#'      along with new colours amongst other things.
+#'      along with new colours.
 #'
 #' @param eem An eem object compliant with the staRdom/eemR framework
 #' @param bin_vals Three routes here. NULL for no bins. "colpal" to match the number of bins to the length of the colour palette. Alternatively, provide a numeric value for the number of bins you would like.
@@ -196,7 +196,7 @@ ggeem2.data.frame <- function(data,
                               redneg = NULL,
                               legend = TRUE,
                               textsize_multiplier = 1,...){
-  # Colpal handling
+  ### Colpal handling
   if(colpal[1] == "12pal"){
     #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
     data("eem_palette_12")
@@ -212,168 +212,238 @@ ggeem2.data.frame <- function(data,
   } else if(!is.vector(colpal)) {
     stop("Please provide a vector of colours, or use the defaults!")
   }
-  # Single vs multiple EEM handling.
+
+  ### Single vs multiple EEM handling.
   if(n_eems == 0){
     stop("n_eems set to 0. Please provide a number of eems")
   } else if(n_eems == 1){
-    # one EEM.
-    plot <- ggeem2_single(data,
-                          n_eems = n_eems,
-                          fill_max = fill_max,
-                          title_text = title_text,
-                          bin_vals = bin_vals,
-                          colpal = colpal,
-                          contour = contour,
-                          interpolate = interpolate,
-                          redneg = redneg,
-                          legend = legend,
-                          textsize_multiplier = textsize_multiplier,...)
-    plot
-  } else {
-    #data <- table
-    plot <- ggeem2_multi(data,
-                         n_eems = n_eems,
-                         fill_max = fill_max,
-                         title_text = title_text,
-                         bin_vals = bin_vals,
-                         colpal = colpal,
-                         contour = contour,
-                         interpolate = interpolate,
-                         redneg = redneg,
-                         legend = legend,
-                         textsize_multiplier = textsize_multiplier)
-    plot
-  }
-}
-
-#' Single plot handler for ggeem2.
-#'
-#' @description Plot a single EEM for ggeem2. Params inherit from ggeem2.
-#'
-#' @noRd
-#'
-ggeem2_single <- function(data, ...){
-  eem <- data
-  eem_constructed <- eemdf_to_eem(eemdf = eem,
-                                  file = NULL,
-                                  sample = "constructed ggeem2 eem",
-                                  location = NULL,
-                                  gathered = TRUE)
-
-  if(colpal[1] == "12pal"){
-    #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
-    data("eem_palette_12")
-    colpal <- eem_palette_12
-    message("Using default colour palette")
-    if(sum(eem$x < 0, na.rm = TRUE) == 0){
-      newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
-      colpal <- newpal(12)
+    ##
+    ### SINGLE EEM PLOTTING.
+    ##
+    ## Bin support.
+    if(colpal[1] == "12pal"){
+      #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
+      data("eem_palette_12")
+      colpal <- eem_palette_12
+      message("Using default colour palette")
+      if(sum(eem$x < 0, na.rm = TRUE) == 0){
+        newpal <- colorRampPalette(c(colpal[2:length(colpal)]))
+        colpal <- newpal(12)
+      }
+    } else if(colpal[1] == "rainbow"){
+      colpal <- rainbow(75)[53:1]
+      message("Using rainbow colour palette")
+    } else if(!is.vector(colpal)) {
+      stop("Please provide a vector of colours, or use the defaults!")
     }
-  } else if(colpal[1] == "rainbow"){
-    colpal <- rainbow(75)[53:1]
-    message("Using rainbow colour palette")
-  } else if(!is.vector(colpal)) {
-    stop("Please provide a vector of colours, or use the defaults!")
-  }
-  # slit dimensions
-  x_slit_min = eem_constructed$ex[2] - eem_constructed$ex[1]
-  x_slit_max = eem_constructed$ex[length(eem_constructed$ex)] - eem_constructed$ex[length(eem_constructed$ex)-1]
-  y_slit_min = eem_constructed$em[2] - eem_constructed$em[1]
-  y_slit_max = eem_constructed$em[length(eem_constructed$em)] - eem_constructed$em[length(eem_constructed$em)-1]
-  # panel border rectangle
-  rect <- data.frame(
-    x = c(min(eem_constructed$ex),min(eem_constructed$ex),max(eem_constructed$ex),max(eem_constructed$ex)),
-    y = c(min(eem_constructed$em),max(eem_constructed$em),min(eem_constructed$em),max(eem_constructed$em))
-  )
-  if(!is.null(redneg)){
-    warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
-  }
-  if(!is.null(bin_vals)){
-    if(bin_vals == "colpal"){
-      message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-      eem_df <- eemUtils::eem_bin(eem = eem_constructed,
-                                  nbins = length(colpal))
+    # slit dimensions
+    x_slit_min = eem_constructed$ex[2] - eem_constructed$ex[1]
+    x_slit_max = eem_constructed$ex[length(eem_constructed$ex)] - eem_constructed$ex[length(eem_constructed$ex)-1]
+    y_slit_min = eem_constructed$em[2] - eem_constructed$em[1]
+    y_slit_max = eem_constructed$em[length(eem_constructed$em)] - eem_constructed$em[length(eem_constructed$em)-1]
+    # panel border rectangle
+    rect <- data.frame(
+      x = c(min(eem_constructed$ex),min(eem_constructed$ex),max(eem_constructed$ex),max(eem_constructed$ex)),
+      y = c(min(eem_constructed$em),max(eem_constructed$em),min(eem_constructed$em),max(eem_constructed$em))
+    )
+    if(!is.null(redneg)){
+      warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
+    }
+    if(!is.null(bin_vals)){
+      if(bin_vals == "colpal"){
+        message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+        eem_df <- eemUtils::eem_bin(eem = eem_constructed,
+                                    nbins = length(colpal))
+      } else {
+        if(!is(bin_vals, "numeric")){
+          stop("If setting number of bins, please provide a numeric value")
+        }
+        message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+        eem_df <- eemUtils::eem_bin(eem = eem_constructed,
+                                    nbins = bin_vals)
+      }
     } else {
-      if(!is(bin_vals, "numeric")){
-        stop("If setting number of bins, please provide a numeric value")
-      }
-      message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-      eem_df <- eemUtils::eem_bin(eem = eem_constructed,
-                                  nbins = bin_vals)
+      eem_df <- eem
     }
-  } else {
-    eem_df <- eem
-  }
-  eem_df$value <- as.numeric(as.character(eem_df$value)) # Just in case there are factors carrying over from eem_bin
-  eem_df$ex <- as.numeric(eem_df$ex)
-  eem_df$em <- as.numeric(eem_df$em)
-  table <- as.data.frame(eem_df)
-  if(!is.numeric(fill_max)){
-    fill_max <- table$value %>% max(na.rm=TRUE)
-  }
-  # These lines will fail if the raster package is loaded. Fixed by specifying dplyr for select.
-  diffs <- table %>%
-    dplyr::select(-value) %>%
-    gather("spec","wl", -sample) %>%
-    group_by(sample,spec) %>%
-    unique() %>%
-    #arrange(sample,spec,wl) %>%
-    #mutate(diffs = wl - lag(wl))
-    summarise(slits = diff(wl) %>% n_distinct()) %>%
-    .$slits != 1
-  # Plotting
-  plot <- table %>%
-    ggplot(aes(x = ex, y = em, z = value))+
-    labs(x = "Excitation (nm)", y = "Emission (nm)")
-  if(any(diffs)){
-    plot <- plot +
-      layer(mapping = aes(colour = value, fill = value),
-            geom = "tile", stat = "identity", position = "identity")
-  } else {
-    plot <- plot +
-      layer(mapping = aes(fill = value),
-            geom = "raster", stat = "identity", position = "identity")
-  }
-  plot <- plot +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-    facet_wrap(~ sample)
-  if(contour){
-    plot <- plot +
-      geom_contour(colour = "white", size = 0.2, alpha = 0.5)
-  }
-  # Binned? Discrete scale.
-  if(isTRUE(bin_vals)){
-    if(table$value %>% min(na.rm=TRUE) < 0){
-      ## Vals for breaks if using bins. Lots of lines because this was a nightmare to wrap my tiny brain around.
-      vals_test <- unique(table$value, na.rm = TRUE)[which(!is.na(unique(table$value, na.rm = TRUE)))]
-      vals_test_break = append(diff(vals_test),diff(vals_test)[length(diff(vals_test))], after = length(diff(vals_test)))
-      vals_shift <- vals_test - (vals_test_break/2)
-      vals_shift <- vals_shift[-1]
-      vals_test_endbreak_half <- (vals_test_break/2)[length(vals_test_break)]
-      vals_shift <- append(vals_shift, (vals_shift[length(vals_shift)] + vals_test_endbreak_half), after = length(vals_shift))
-      vals_shift <- round(vals_shift,2)
-      vals_labels <- round(vals_test,2)
-      # Adaptive shifting in case of length mismatch.
-      if(length(colpal) < length(vals_labels)){
-        vals_labels <- vals_labels[-1]
-        vals_shift <- vals_shift[-length(vals_shift)]
-      }
+    eem_df$value <- as.numeric(as.character(eem_df$value)) # Just in case there are factors carrying over from eem_bin
+    eem_df$ex <- as.numeric(eem_df$ex)
+    eem_df$em <- as.numeric(eem_df$em)
+    table <- as.data.frame(eem_df)
+    if(!is.numeric(fill_max)){
+      fill_max <- table$value %>% max(na.rm=TRUE)
+    }
+    # These lines will fail if the raster package is loaded. Fixed by specifying dplyr for select.
+    diffs <- table %>%
+      dplyr::select(-value) %>%
+      gather("spec","wl", -sample) %>%
+      group_by(sample,spec) %>%
+      unique() %>%
+      #arrange(sample,spec,wl) %>%
+      #mutate(diffs = wl - lag(wl))
+      summarise(slits = diff(wl) %>% n_distinct()) %>%
+      .$slits != 1
+    # Plotting
+    plot <- table %>%
+      ggplot(aes(x = ex, y = em, z = value))+
+      labs(x = "Excitation (nm)", y = "Emission (nm)")
+    if(any(diffs)){
       plot <- plot +
-        scale_fill_stepsn(colours = colpal, breaks = vals_shift, labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
-                          na.value="white") +
-        scale_colour_stepsn(colours = colpal, breaks = vals_shift,labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+        layer(mapping = aes(colour = value, fill = value),
+              geom = "tile", stat = "identity", position = "identity")
+    } else {
+      plot <- plot +
+        layer(mapping = aes(fill = value),
+              geom = "raster", stat = "identity", position = "identity")
+    }
+    plot <- plot +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+      facet_wrap(~ sample)
+    if(contour){
+      plot <- plot +
+        geom_contour(colour = "white", size = 0.2, alpha = 0.5)
+    }
+    # Binned? Discrete scale.
+    if(isTRUE(bin_vals)){
+      if(table$value %>% min(na.rm=TRUE) < 0){
+        ## Vals for breaks if using bins. Lots of lines because this was a nightmare to wrap my tiny brain around.
+        vals_test <- unique(table$value, na.rm = TRUE)[which(!is.na(unique(table$value, na.rm = TRUE)))]
+        vals_test_break = append(diff(vals_test),diff(vals_test)[length(diff(vals_test))], after = length(diff(vals_test)))
+        vals_shift <- vals_test - (vals_test_break/2)
+        vals_shift <- vals_shift[-1]
+        vals_test_endbreak_half <- (vals_test_break/2)[length(vals_test_break)]
+        vals_shift <- append(vals_shift, (vals_shift[length(vals_shift)] + vals_test_endbreak_half), after = length(vals_shift))
+        vals_shift <- round(vals_shift,2)
+        vals_labels <- round(vals_test,2)
+        # Adaptive shifting in case of length mismatch.
+        if(length(colpal) < length(vals_labels)){
+          vals_labels <- vals_labels[-1]
+          vals_shift <- vals_shift[-length(vals_shift)]
+        }
+        plot <- plot +
+          scale_fill_stepsn(colours = colpal, breaks = vals_shift, labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
                             na.value="white") +
-        scale_x_continuous(expand = c(0,0)) +
-        scale_y_continuous(expand = c(0,0))
+          scale_colour_stepsn(colours = colpal, breaks = vals_shift,labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                              na.value="white") +
+          scale_x_continuous(expand = c(0,0)) +
+          scale_y_continuous(expand = c(0,0))
+      } else {
+        plot <- plot +
+          scale_fill_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white")+
+          scale_colour_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white") +
+          scale_x_continuous(expand = c(0,0))+#, limits = c(min(eem$ex))) +
+          scale_y_continuous(expand = c(0,0))#, limits = c(min(eem$em)))
+      }
+    } else {
+      # Not binned - continuous scale.
+      if(table$value %>% min(na.rm=TRUE) < 0){
+        vals <- c(table$value %>% min(na.rm = TRUE), seq(from = 0, to = fill_max, length.out = length(colpal) - 1))
+        vals <- (vals - min(vals))/diff(range(vals))
+        plot <- plot +
+          scale_fill_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                               na.value="white")+
+          scale_colour_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
+                                 na.value="white") +
+          scale_x_continuous(expand = c(0,0)) +
+          scale_y_continuous(expand = c(0,0))
+      } else {
+        plot <- plot +
+          scale_fill_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white")+
+          scale_colour_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white") +
+          scale_x_continuous(expand = c(0,0)) +
+          scale_y_continuous(expand = c(0,0))
+      }
+    }
+    # Title handling.
+    if(!is.null(title_text)){
+      plot <- plot +
+        labs(title = title_text) +
+        theme(
+          plot.title = element_text(hjust = 0.5,
+                                    size = 11*textsize_multiplier,
+                                    face = "bold")
+        )
     } else {
       plot <- plot +
-        scale_fill_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white")+
-        scale_colour_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white") +
-        scale_x_continuous(expand = c(0,0))+#, limits = c(min(eem$ex))) +
-        scale_y_continuous(expand = c(0,0))#, limits = c(min(eem$em)))
+        theme(
+          plot.title = element_blank()
+        )
     }
+    # Final thematic elements.
+    plot <- plot +
+      theme(
+        panel.background = element_rect(fill = 'white', colour = 'black'),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.text = element_text(size = 9*textsize_multiplier),
+        axis.title = element_text(size = 10*textsize_multiplier),
+        legend.text = element_text(size = 9*textsize_multiplier),
+        legend.title = element_text(size = 10*textsize_multiplier)
+      )
+    # Border rectangle
+    plot  <- plot +
+      annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
+               colour = "black", fill = "white", alpha = 0, size = 0.5)
+    # Legend removal
+    if(!isTRUE(legend)){
+      plot <- plot +
+        theme(
+          legend.position = "none"
+        )
+    } #else {   # Unhash this code if you would like a nested legend.
+    #plot <- plot +
+    #  theme(
+    #    legend.position = c(0.9,0.2)
+    #  )
+    #}
+    plot
   } else {
-    # Not binned - continuous scale.
+    ##
+    ### MULTI-PLOT HANDLING
+    ##
+    ## No binning support.
+    if(!is.null(nbins)){
+      message("Binning not supported for multiple plots.")
+    }
+    if(!is.null(bin_vals)){
+      message("Binning not supported for multiple EEMs with ggeem2. Skipping binning.")
+    }
+    if(!is.null(redneg)){
+      warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
+    }
+    table <- data %>%
+      mutate_at(vars(ex,em,value),as.numeric)
+    if(!is.numeric(fill_max)){
+      fill_max <- table$value %>% max(na.rm=TRUE)
+    }
+    diffs <- table %>%
+      select(-value) %>%
+      gather("spec","wl", -sample) %>%
+      group_by(sample,spec) %>%
+      unique() %>%
+      summarise(slits = diff(wl) %>% n_distinct()) %>%
+      .$slits != 1
+
+    plot <- table %>%
+      ggplot(aes(x = ex, y = em, z = value))+
+      labs(x = "Excitation (nm)", y = "Emission (nm)")
+
+    if(any(diffs)){
+      plot <- plot +
+        layer(mapping = aes(colour = value, fill = value),
+              geom = "tile", stat = "identity", position = "identity")
+    } else {
+      plot <- plot +
+        layer(mapping = aes(fill = value),
+              geom = "raster", stat = "identity", position = "identity")
+    }
+
+    plot <- plot +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+      facet_wrap(~ sample)
+    if(contour){
+      plot <- plot +
+        geom_contour(colour = "white", size = 0.2, alpha = 0.5)
+    }
     if(table$value %>% min(na.rm=TRUE) < 0){
       vals <- c(table$value %>% min(na.rm = TRUE), seq(from = 0, to = fill_max, length.out = length(colpal) - 1))
       vals <- (vals - min(vals))/diff(range(vals))
@@ -391,151 +461,31 @@ ggeem2_single <- function(data, ...){
         scale_x_continuous(expand = c(0,0)) +
         scale_y_continuous(expand = c(0,0))
     }
-  }
-  # Title handling.
-  if(!is.null(title_text)){
-    plot <- plot +
-      labs(title = title_text) +
-      theme(
-        plot.title = element_text(hjust = 0.5,
-                                  size = 11*textsize_multiplier,
-                                  face = "bold")
-      )
-  } else {
+    if(!is.null(title_text)){
+      plot <- plot +
+        labs(title = title_text) +
+        theme(plot.title = element_text(hjust = 0.5, size = 11*textsize_multiplier, face = "bold"))
+    } else {
+      plot <- plot +
+        theme(plot.title = element_blank())
+    }
     plot <- plot +
       theme(
-        plot.title = element_blank()
+        panel.background = element_rect(fill = 'white', colour = 'black'),
+        strip.background = element_blank(),
+        strip.text = element_blank(),
+        axis.text = element_text(size = 9*textsize_multiplier),
+        axis.title = element_text(size = 10*textsize_multiplier),
+        legend.text = element_text(size = 9*textsize_multiplier),
+        legend.title = element_text(size = 10*textsize_multiplier)
       )
+    #plot  <- plot +
+    #  annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
+    #           colour = "black", fill = "white", alpha = 0, size = 0.5)
+    if(!isTRUE(legend)){
+      plot <- plot +
+        theme(legend.position = "none")
+    }
+    plot
   }
-  # Final thematic elements.
-  plot <- plot +
-    theme(
-      panel.background = element_rect(fill = 'white', colour = 'black'),
-      strip.background = element_blank(),
-      strip.text = element_blank(),
-      axis.text = element_text(size = 9*textsize_multiplier),
-      axis.title = element_text(size = 10*textsize_multiplier),
-      legend.text = element_text(size = 9*textsize_multiplier),
-      legend.title = element_text(size = 10*textsize_multiplier)
-    )
-  # Border rectangle
-  plot  <- plot +
-    annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
-             colour = "black", fill = "white", alpha = 0, size = 0.5)
-  # Legend removal
-  if(!isTRUE(legend)){
-    plot <- plot +
-      theme(
-        legend.position = "none"
-      )
-  } #else {   # Unhash this code if you would like a nested legend.
-  #plot <- plot +
-  #  theme(
-  #    legend.position = c(0.9,0.2)
-  #  )
-  #}
-  plot
-
-}
-
-#' Multi-plot handler for ggeem2.
-#'
-#' @description Plot a single EEM for ggeem2. Params inherit from ggeem2.
-#'
-#' @noRd
-#'
-ggeem2_multi <- function(data,
-                         n_eems = n_eems,
-                         fill_max = fill_max,
-                         title_text = title_text,
-                         bin_vals = bin_vals,
-                         colpal = colpal,
-                         contour = contour,
-                         interpolate = interpolate,
-                         redneg = redneg,
-                         legend = legend,
-                         textsize_multiplier = textsize_multiplier,...){
-  if(!is.null(bin_vals)){
-    message("Binning not supported for multiple EEMs with ggeem2. Skipping binning.")
-  }
-  if(!is.null(redneg)){
-    warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
-  }
-  table <- data %>%
-    mutate_at(vars(ex,em,value),as.numeric)
-  if(!is.numeric(fill_max)){
-    fill_max <- table$value %>% max(na.rm=TRUE)
-  }
-  diffs <- table %>%
-    select(-value) %>%
-    gather("spec","wl", -sample) %>%
-    group_by(sample,spec) %>%
-    unique() %>%
-    summarise(slits = diff(wl) %>% n_distinct()) %>%
-    .$slits != 1
-
-  plot <- table %>%
-    ggplot(aes(x = ex, y = em, z = value))+
-    labs(x = "Excitation (nm)", y = "Emission (nm)")
-
-  if(any(diffs)){
-    plot <- plot +
-      layer(mapping = aes(colour = value, fill = value),
-            geom = "tile", stat = "identity", position = "identity")
-  } else {
-    plot <- plot +
-      layer(mapping = aes(fill = value),
-            geom = "raster", stat = "identity", position = "identity")
-  }
-
-  plot <- plot +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-    facet_wrap(~ sample)
-  if(contour){
-    plot <- plot +
-      geom_contour(colour = "white", size = 0.2, alpha = 0.5)
-  }
-  if(table$value %>% min(na.rm=TRUE) < 0){
-    vals <- c(table$value %>% min(na.rm = TRUE), seq(from = 0, to = fill_max, length.out = length(colpal) - 1))
-    vals <- (vals - min(vals))/diff(range(vals))
-    plot <- plot +
-      scale_fill_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
-                           na.value="white")+
-      scale_colour_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
-                             na.value="white") +
-      scale_x_continuous(expand = c(0,0)) +
-      scale_y_continuous(expand = c(0,0))
-  } else {
-    plot <- plot +
-      scale_fill_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white")+
-      scale_colour_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white") +
-      scale_x_continuous(expand = c(0,0)) +
-      scale_y_continuous(expand = c(0,0))
-  }
-  if(!is.null(title_text)){
-    plot <- plot +
-      labs(title = title_text) +
-      theme(plot.title = element_text(hjust = 0.5, size = 11*textsize_multiplier, face = "bold"))
-  } else {
-    plot <- plot +
-      theme(plot.title = element_blank())
-  }
-  plot <- plot +
-    theme(
-      panel.background = element_rect(fill = 'white', colour = 'black'),
-      strip.background = element_blank(),
-      strip.text = element_blank(),
-      axis.text = element_text(size = 9*textsize_multiplier),
-      axis.title = element_text(size = 10*textsize_multiplier),
-      legend.text = element_text(size = 9*textsize_multiplier),
-      legend.title = element_text(size = 10*textsize_multiplier)
-    )
-  #plot  <- plot +
-  #  annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
-  #           colour = "black", fill = "white", alpha = 0, size = 0.5)
-  if(!isTRUE(legend)){
-    plot <- plot +
-      theme(legend.position = "none")
-  }
-  plot
 }

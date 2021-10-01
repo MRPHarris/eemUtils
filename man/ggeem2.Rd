@@ -26,7 +26,7 @@ ggeem2(data, fill_max = FALSE, ...)
   title_text = NULL,
   bin_vals = NULL,
   colpal = "12pal",
-  contour = TRUE,
+  contour = FALSE,
   interpolate = FALSE,
   redneg = NULL,
   legend = TRUE,
@@ -53,5 +53,5 @@ ggeem2(data, fill_max = FALSE, ...)
 }
 \description{
 An update to staRdom's existing EEM plotter, ggeem. Option for binning values,
-     along with new colours amongst other things.
+     along with new colours.
 }
