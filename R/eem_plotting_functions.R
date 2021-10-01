@@ -195,6 +195,8 @@ ggeem2.data.frame <- function(data,
                                  redneg = NULL,
                                  legend = TRUE,
                                  textsize_multiplier = 1,...){
+
+  eem <- data
   if(colpal[1] == "12pal"){
     #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
     data("eem_palette_12")
