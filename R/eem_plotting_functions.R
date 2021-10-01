@@ -123,7 +123,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
   print(eem_overview_plot(group_eemlist[1:6], spp = 6, contour = contour))
 }
 
-#' A tweaked EEM plotter, building off of ggeem() from staRdom()
+#' A tweaked EEM plotter, building on ggeem() from staRdom(). For more detailed information, refer to ?staRdom::ggeem()
 #'
 #' @description An update to staRdom's existing EEM plotter, ggeem. Option for binning values,
 #'      along with new colours amongst other things.
@@ -137,21 +137,64 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #' @param legend TRUE/FALSE to display legend
 #' @param textsize_multiplier a simple numeric multiplier for increasing text size of graphical elements. To help with R's tricky graphics device text scaling when exporting.
 #'
+#' @import ggplot2 dplyr tidyr eemR
+#' @importFrom grDevices rainbow
+#'
 #' @export
 #'
-ggeem2 <- function(eem,
-                   fill_max = FALSE,
-                   title_text = NULL,
-                   bin_vals = 12,
-                   colpal = "12pal",
-                   contour = TRUE,
-                   interpolate = FALSE,
-                   redneg = NULL,
-                   legend = TRUE,
-                   textsize_multiplier = 1,...){
-  if(!is(eem,"eem")){
-    stop("Please provide an object of class 'eem'")
+ggeem2 <- function(data, fill_max = FALSE, ...) UseMethod("ggeem2")
+
+#' @rdname ggeem2
+#' @export
+ggeem2.default <- function(data, fill_max=FALSE, ...){
+  stop("Data is not of a suitable format!")
+}
+
+#' @rdname ggeem2
+#' @export
+ggeem2.eemlist <- function(data, fill_max = FALSE, eemlist_order = TRUE, ...)
+{
+  table <- data %>% lapply(as.data.frame) %>% bind_rows()
+  if(isTRUE(eemlist_order)){
+    table$sample <- table$sample %>%
+      factor(levels = table$sample %>% unique())
   }
+  ggeem2(table, fill_max = fill_max ,...)
+}
+
+#' @rdname ggeem2
+#' @export
+ggeem2.eem <- function(data, fill_max = FALSE, ...)
+{
+  table <- data %>% as.data.frame()
+  ggeem2(table, fill_max = fill_max, ...)
+}
+
+#' @rdname ggeem2
+#' @export
+ggeem2.parafac <- function(data, fill_max = FALSE, ...)
+{
+  table <- data %>% eempf_comp_mat() #eem_list
+  table <- lapply(table %>% names(),function(name){
+    table[[name]] %>% mutate(sample = name)
+  }) %>% bind_rows() %>%
+    mutate(sample = factor(sample, levels = colnames(data$A)))
+  #filename <- paste0('EEM_PARAFAC_components_',suffix,format(Sys.time(), "%Y%m%d_%H%M%S"))
+  ggeem2(table,fill_max=fill_max,...)
+}
+
+#' @rdname ggeem2
+#' @export
+ggeem2.data.frame <- function(data,
+                                 fill_max = FALSE,
+                                 title_text = NULL,
+                                 bin_vals = 12,
+                                 colpal = "12pal",
+                                 contour = TRUE,
+                                 interpolate = FALSE,
+                                 redneg = NULL,
+                                 legend = TRUE,
+                                 textsize_multiplier = 1,...){
   if(colpal[1] == "12pal"){
     #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
     data("eem_palette_12")
@@ -319,4 +362,3 @@ ggeem2 <- function(eem,
   #}
   plot
 }
-
