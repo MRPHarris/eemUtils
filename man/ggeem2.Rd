@@ -21,6 +21,7 @@ ggeem2(data, fill_max = FALSE, ...)
 
 \method{ggeem2}{data.frame}(
   data,
+  n_eems = 1,
   fill_max = FALSE,
   title_text = NULL,
   bin_vals = NULL,
