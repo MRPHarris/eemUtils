@@ -231,7 +231,7 @@ ggeem2.data.frame <- function(data,
     warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
   }
   if(isTRUE(bin_vals)){
-    message("binning vals based on a max EEM intensity of ",max(eem$x, na.rm = TRUE), " and ",length(colpal)," bins.")
+    message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
     eem_df <- eemUtils::eem_bin(eem = eem_constructed,
                                 nbins = length(colpal))
   } else {
@@ -353,7 +353,7 @@ ggeem2.data.frame <- function(data,
     )
   # Border rectangle
   plot  <- plot +
-    annotate(geom = "rect", xmin = min(eem$ex)-(x_slit_min/2), xmax = max(eem$ex)+(x_slit_max/2), ymin = min(eem$em)-(y_slit_min/2), ymax = max(eem$em)+(y_slit_max/2),
+    annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
              colour = "black", fill = "white", alpha = 0, size = 0.5)
   # Legend removal
   if(!isTRUE(legend)){
