@@ -627,7 +627,7 @@ eem_bin <- function(eem,
   bin1 <- max_eem_val/(nbins)
   intensity_breaks <- seq(0,max_eem_val-bin1,bin1)
   intensity_breaks <- append(intensity_breaks, Inf, after = length(intensity_breaks))
-  if(sum(eem$x < 0, na.rm = TRUE) != 0){
+  if(sum(eem$value < 0, na.rm = TRUE) != 0){
     # handling for negative values
     intensity_breaks <- append(intensity_breaks, min(eemdf$value, na.rm = TRUE), after = 0)
   }

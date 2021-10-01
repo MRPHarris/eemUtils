@@ -34,7 +34,7 @@ Designed for use in my thesis and future pubs. It has integrated options
 for binning, and the default colour scheme takes after MATLAB’s ‘jet’
 scheme. Below are two examples, using some Black Tea OM SRM.
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+###### plot here: placeholder
 
 #### plot\_eem\_3D
 
@@ -138,11 +138,14 @@ devtools::install_github("MRPHarris/eemUtils")
 
 ## Update Notes
 
-23/09/21 \| An updated ggplot2-compatible EEM plotter, ggeem2(), has
+23/09/21 \| An updated ggplot2-compatible EEM plotter, `ggeem2()`, has
 been added. This function updates the plotting provided by staRdom’s
 ggeem() function, tweaking the graphical parameters and adding an option
-for intensity value binning via eem\_bin(). The check\_eem() function
+for intensity value binning via `eem_bin()`. The check\_eem() function
 has been removed, as it is no longer useful.
+
+01/10/21 \| `ggeem2()` now has multi-plot support, and inherits
+staRdom::ggeem()’s class handling.
 
 ## References
 
