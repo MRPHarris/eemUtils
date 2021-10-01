@@ -614,10 +614,11 @@ eemdf_to_eem <- function(eemdf,
 #'
 eem_bin <- function(eem,
                     nbins = 12){
-  if(!is(eem,"eem")){
-    stop("Please use an object of class 'eem'.")
+  if(is(eem,"data.frame")){
+    eemdf <- eem
+  } else if(is(eem, "eem")){
+    eemdf <- as.data.frame(eem, gather = TRUE)
   }
-  eemdf <- as.data.frame(eem, gather = TRUE)
   if(colnames(eemdf)[3] != "value"){
     stop("Please use a gathered EEM dataframe returned by as.data.frame(eem, gather = TRUE)")
   }

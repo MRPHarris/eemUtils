@@ -258,7 +258,7 @@ ggeem2.data.frame <- function(data,
     if(!is.null(bin_vals)){
       if(bin_vals == "colpal"){
         message("binning vals based on a max EEM intensity of ",max(eem_constructed$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-        eem_df <- eemUtils::eem_bin(eem = eem_constructed,
+        eem_df <- eemUtils::eem_bin(eem = eem,
                                     nbins = length(colpal))
       } else {
         if(!is(bin_vals, "numeric")){
@@ -495,3 +495,4 @@ ggeem2.data.frame <- function(data,
     plot
   }
 }
+
