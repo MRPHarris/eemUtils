@@ -60,9 +60,9 @@ staRdom.
 <img src="man/figures/3D_eem_example_PHSC.png" height="800px" />
 </p>
 
-To view a 3D, interactive render of the black tea from above, download
-the BlackTea\_plot\_eem\_3D\_widget html file and view it in a
-supporting program (e.g. Chrome).
+To view a 3D, interactive render of the black tea from the two plots
+above, download the BlackTea\_plot\_eem\_3D\_widget html file in the
+‘extras’ folder and open it with a suitable program (e.g. Chrome).
 
 #### Generate\_CORCONDIA
 
