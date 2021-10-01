@@ -34,7 +34,9 @@ Designed for use in my thesis and future pubs. It has integrated options
 for binning, and the default colour scheme takes after MATLAB’s ‘jet’
 scheme. Below are two examples, using some Black Tea OM SRM.
 
-###### plot here: placeholder
+    #> Warning: Removed 1656 rows containing non-finite values (stat_contour).
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
 #### plot\_eem\_3D
 

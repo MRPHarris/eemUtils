@@ -33,7 +33,17 @@ Below are some examples of functions within this package.
 
 An updated EEM plotter, directly adapted from `staRdom::ggeem()`. It retains much of the same functionality, with tweaked graphical elements. Designed for use in my thesis and future pubs. It has integrated options for binning, and the default colour scheme takes after MATLAB's 'jet' scheme. Below are two examples, using some Black Tea OM SRM.
 
-###### plot here: placeholder
+```{r, echo = FALSE, eval = TRUE, collapse = TRUE,warKning = FALSE}
+pacman::p_load(eemUtils,staRdom,eemR,ggplot2,cowplot,pracma,magrittr,magick,tidyverse)
+#data(ILSMBT_36_eem_average)
+ILSMBT_36_eem_average <- (function(...)get(data(...,envir = new.env())))("ILSMBT_36_eem_average")
+intp_eem <- eemUtils::interpolate_eem(ILSMBT_36_eem_average, n_pp = 2, verbose = FALSE)
+suppressMessages(p1 <- eemUtils::ggeem2(ILSMBT_36_eem_average, contour = TRUE, legend = FALSE, title_text = "Black tea 36-EEM avg") + theme(aspect.ratio = 1/1))
+suppressMessages(p2 <- eemUtils::ggeem2(intp_eem, bin_vals = "colpal", contour = FALSE, legend = FALSE, title_text = "Black tea 36-EEM avg interp + bin") + theme(aspect.ratio = 1/1))
+cowplot::plot_grid(p1,p2,
+                   ncol = 2, nrow = 1)
+
+```
 
 #### plot_eem_3D
 
