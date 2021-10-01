@@ -185,7 +185,7 @@ ggeem2.parafac <- function(data, fill_max = FALSE, ...)
 
 #' @rdname ggeem2
 #' @export
-ggeem2.data.frame <- function(data,
+ggeem2.data.frame <- <- function(data,
                                  fill_max = FALSE,
                                  title_text = NULL,
                                  bin_vals = 12,
@@ -195,8 +195,13 @@ ggeem2.data.frame <- function(data,
                                  redneg = NULL,
                                  legend = TRUE,
                                  textsize_multiplier = 1,...){
-
   eem <- data
+  eem_constructed <- eemdf_to_eem(eemdf = eem,
+                                  file = NULL,
+                                  sample = "constructed ggeem2 eem",
+                                  location = NULL,
+                                  gathered = TRUE)
+
   if(colpal[1] == "12pal"){
     #colpal <- (function(...)get(data(...,envir = new.env())))(eem_palette_12) # thanks henfiber https://stackoverflow.com/questions/30951204/load-dataset-from-r-package-using-data-assign-it-directly-to-a-variable
     data("eem_palette_12")
@@ -213,24 +218,24 @@ ggeem2.data.frame <- function(data,
     stop("Please provide a vector of colours, or use the defaults!")
   }
   # slit dimensions
-  x_slit_min = eem$ex[2] - eem$ex[1]
-  x_slit_max = eem$ex[length(eem$ex)] - eem$ex[length(eem$ex)-1]
-  y_slit_min = eem$em[2] - eem$em[1]
-  y_slit_max = eem$em[length(eem$em)] - eem$em[length(eem$em)-1]
+  x_slit_min = eem_constructed$ex[2] - eem_constructed$ex[1]
+  x_slit_max = eem_constructed$ex[length(eem_constructed$ex)] - eem_constructed$ex[length(eem_constructed$ex)-1]
+  y_slit_min = eem_constructed$em[2] - eem_constructed$em[1]
+  y_slit_max = eem_constructed$em[length(eem_constructed$em)] - eem_constructed$em[length(eem_constructed$em)-1]
   # panel border rectangle
   rect <- data.frame(
-    x = c(min(eem$ex),min(eem$ex),max(eem$ex),max(eem$ex)),
-    y = c(min(eem$em),max(eem$em),min(eem$em),max(eem$em))
+    x = c(min(eem_constructed$ex),min(eem_constructed$ex),max(eem_constructed$ex),max(eem_constructed$ex)),
+    y = c(min(eem_constructed$em),max(eem_constructed$em),min(eem_constructed$em),max(eem_constructed$em))
   )
   if(!is.null(redneg)){
     warning("redneg is deprecated and will be ignored! Please use the argument 'colpal = c(rainbow(75)[58],rainbow(75)[51:1])' to produce similar behaviour.")
   }
   if(isTRUE(bin_vals)){
     message("binning vals based on a max EEM intensity of ",max(eem$x, na.rm = TRUE), " and ",length(colpal)," bins.")
-    eem_df <- eemUtils::eem_bin(eem = eem,
+    eem_df <- eemUtils::eem_bin(eem = eem_constructed,
                                 nbins = length(colpal))
   } else {
-    eem_df <- as.data.frame(eem)
+    eem_df <- eem
   }
   eem_df$value <- as.numeric(as.character(eem_df$value)) # Just in case there are factors carrying over from eem_bin
   eem_df$ex <- as.numeric(eem_df$ex)
@@ -364,3 +369,4 @@ ggeem2.data.frame <- function(data,
   #}
   plot
 }
+
