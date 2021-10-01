@@ -185,7 +185,7 @@ ggeem2.parafac <- function(data, fill_max = FALSE, ...)
 
 #' @rdname ggeem2
 #' @export
-ggeem2.data.frame <- <- function(data,
+ggeem2.data.frame <- function(data,
                                  fill_max = FALSE,
                                  title_text = NULL,
                                  bin_vals = 12,
