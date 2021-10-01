@@ -252,17 +252,7 @@ ggeem2.data.frame <- function(data,
 #'
 #' @noRd
 #'
-ggeem2_single <- function(data,
-                          n_eems = n_eems,
-                          fill_max = fill_max,
-                          title_text = title_text,
-                          bin_vals = bin_vals,
-                          colpal = colpal,
-                          contour = contour,
-                          interpolate = interpolate,
-                          redneg = redneg,
-                          legend = legend,
-                          textsize_multiplier = textsize_multiplier,...){
+ggeem2_single <- function(data, ...){
   eem <- data
   eem_constructed <- eemdf_to_eem(eemdf = eem,
                                   file = NULL,
