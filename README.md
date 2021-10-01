@@ -34,7 +34,15 @@ Designed for use in my thesis and future pubs. It has integrated options
 for binning, and the default colour scheme takes after MATLAB’s ‘jet’
 scheme. Below are two examples, using some Black Tea OM SRM.
 
-    #> Warning: Removed 1656 rows containing non-finite values (stat_contour).
+``` r
+pacman::p_load(eemUtils,staRdom,eemR,ggplot2,cowplot,pracma,magrittr,magick,tidyverse)
+ILSMBT_36_eem_average <- (function(...)get(data(...,envir = new.env())))("ILSMBT_36_eem_average")
+intp_eem <- eemUtils::interpolate_eem(ILSMBT_36_eem_average, n_pp = 2, verbose = FALSE)
+p1 <- eemUtils::ggeem2(ILSMBT_36_eem_average, contour = TRUE, legend = FALSE, title_text = "Black tea 36-EEM avg") + theme(aspect.ratio = 1/1)
+p2 <- eemUtils::ggeem2(intp_eem, bin_vals = "colpal", contour = FALSE, legend = FALSE, title_text = "Black tea 36-EEM avg interp + bin") + theme(aspect.ratio = 1/1)
+cowplot::plot_grid(p1,p2,
+                   ncol = 2, nrow = 1)
+```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
@@ -44,13 +52,17 @@ A simple conversion of `staRdom::eempf_comps3D()`, but for use with
 sample EEM data, rather than outputs from a PARAFAC model. Extremely
 useful when checking individual samples for the presence of scatter
 lines or artefacts, or for quickly identifying the point of maximum
-fluorescence within part of an EEM.
-
-    plot_eem_3D()
+fluorescence within part of an EEM. Option for the darker, MATLAB
+‘jet’-esque colourscheme, or for a more vibrant rainbow as is used in
+staRdom.
 
 <p align="center">
-<img src="man/figures/3D_eem_example.png" height="400px" />
+<img src="man/figures/3D_eem_example_PHSC.png" height="800px" />
 </p>
+
+To view a 3D, interactive render of the black tea from above, download
+the BlackTea\_plot\_eem\_3D\_widget html file and view it in a
+supporting program (e.g. Chrome).
 
 #### Generate\_CORCONDIA
 
