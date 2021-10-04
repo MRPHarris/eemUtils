@@ -159,7 +159,7 @@ ggeem2.eemlist <- function(data, fill_max = FALSE, eemlist_order = TRUE, ...)
     table$sample <- table$sample %>%
       factor(levels = table$sample %>% unique())
   }
-  ggeem2(table, fill_max = fill_max, n_eems = as.numeric(length(data)))
+  ggeem2(table, fill_max = fill_max, n_eems = as.numeric(length(data)),...)
 }
 
 #' @rdname ggeem2
