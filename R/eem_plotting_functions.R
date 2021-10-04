@@ -407,7 +407,7 @@ ggeem2.data.frame <- function(data,
     ### MULTI-PLOT HANDLING
     ##
     ## No binning support.
-    if(!is.null(nbins)){
+    if(!is.null(bin_vals)){
       message("Binning not supported for multiple plots.")
     }
     if(!is.null(bin_vals)){
