@@ -67,7 +67,7 @@ eem_neg_to_0 <- function(eemlist, outputfolder = NULL){
   for(i in seq_along(EEMs_NoNeg)){                                         # main for loop
     eem_ungathered <- as.data.frame(EEMs_NoNeg[[i]], gather = FALSE)       # extract EEM, don't gather
     eem_ungathered[,][eem_ungathered[,] <0] <- 0                        # set all values less than 0 in EEM to 0
-    eemre <- data_frame_to_eem(eem_ungathered,
+    eemre <- eemdf_to_eem(eem_ungathered,
                       file = EEMs_NoNeg[[i]][['file']],
                       sample = EEMs_NoNeg[[i]][['sample']],
                       location = EEMs_NoNeg[[i]][['location']])
@@ -278,7 +278,7 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
       eem_denorm <- eem_ungathered*raman_peak_emission
       eem_norm <- eem_denorm/raman_peak_area
       # coerce back to an eem object
-      eem_norm <- data_frame_to_eem(x = eem_norm, sample = sample_name, file = filename, location = location, ex = 'cols')
+      eem_norm <- eemdf_to_eem(eemdf = eem_norm, sample = sample_name, file = filename, location = location)
       # insert into normalised eemlist
       normalised_eemlist[[i]] <- eem_norm
       #write.csv(eem_ungathered, file = paste0(outputfolder,eemlist[[i]][["sample"]],"_denorm.csv"), row.names = TRUE)
@@ -302,7 +302,7 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
       # do the denormalising and normalising
       eem_norm <- eem_ungathered/norm_value
       # coerce back to an eem object
-      eem_norm <- data_frame_to_eem(x = eem_norm, sample = sample_name, filename = filename, location = location, ex = 'cols')
+      eem_norm <- eemdf_to_eem(eemdf = eem_norm, sample = sample_name, filename = filename, location = location)
       # insert into normalised eemlist
       normalised_eemlist[[i]] <- eem_norm
       #write.csv(eem_ungathered, file = paste0(outputfolder,eemlist[[i]][["sample"]],"_denorm.csv"), row.names = TRUE)
@@ -322,7 +322,7 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
       eem_ungathered <- as.data.frame(eemlist[[i]], gather = FALSE)
       eem_norm <- eem_ungathered/norm_value
       # coerce back to an eem object
-      eem_norm <- data_frame_to_eem(x = eem_norm, sample = sample_name, filename = filename, location = location, ex = 'cols')
+      eem_norm <- eemdf_to_eem(eemdf = eem_norm, sample = sample_name, filename = filename, location = location)
       # insert into normalised eemlist
       normalised_eemlist[[i]] <- eem_norm
       #write.csv(eem_ungathered, file = paste0(outputfolder,eemlist[[i]][["sample"]],"_denorm.csv"), row.names = TRUE)
@@ -342,7 +342,7 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
       # do the denormalising and normalising
       eem_norm <- eem_ungathered/norm_value
       # coerce back to an eem object
-      eem_norm <- data_frame_to_eem(x = eem_norm, sample = sample_name, file = filename, location = location, ex = 'cols')
+      eem_norm <- eemdf_to_eem(eemdf = eem_norm, sample = sample_name, file = filename, location = location)
       # insert into normalised eemlist
       normalised_eemlist[[i]] <- eem_norm
       #write.csv(eem_ungathered, file = paste0(outputfolder,eemlist[[i]][["sample"]],"_denorm.csv"), row.names = TRUE)
