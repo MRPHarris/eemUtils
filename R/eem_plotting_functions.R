@@ -180,7 +180,7 @@ ggeem2.parafac <- function(data, fill_max = FALSE, ...)
   }) %>% bind_rows() %>%
     mutate(sample = factor(sample, levels = colnames(data$A)))
   #filename <- paste0('EEM_PARAFAC_components_',suffix,format(Sys.time(), "%Y%m%d_%H%M%S"))
-  ggeem2(table,fill_max=fill_max,...)
+  ggeem2(table,fill_max=fill_max,n_eems = ncol(data$A),...)
 }
 
 #' @rdname ggeem2
