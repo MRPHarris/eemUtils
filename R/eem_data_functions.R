@@ -643,7 +643,6 @@ eem_bin <- function(eem,
   return(eemdf_2)
 }
 
-
 #' Get the max intensity value's ex/em position.
 #'
 #' @description Get the excitation/emission coordinates of the point of maximum fluorescence
