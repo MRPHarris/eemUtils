@@ -237,7 +237,7 @@ extract_ramanpeak_areas <- function(RAMdat, range_lower = NULL, range_upper = 50
   # Number of samples
   NoSamples = as.numeric(length(RAMmat[,1])) - 1 # n samples
   it_list <- vector(mode = "list", length = NoSamples) # iteration list for main loop
-  IR = zeros(NoSamples,2)
+  IR = matrix(0, nrow = NoSamples, ncol = 2)
   # The following code was originally wrapped in the 'RamanPeakPos' function from drEEM. Please cite accordingly.
   landa_em = 1/(1/landa_ex-3380/10^7)
   landa_em <<- landa_em
@@ -337,7 +337,7 @@ extract_ramanpeak_areas <- function(RAMdat, range_lower = NULL, range_upper = 50
       sg2 = smooth(g)
       sg <- as.matrix(sg)
       #Identify sequences of positive and negative gradients
-      p = zeros(length(sg),1)
+      p = matrix(0,nrow=length(sg),length=1)
       n = p
       sq = sequence - 1
       for (i in seq_along(1:length(sg))){
