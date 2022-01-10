@@ -692,16 +692,19 @@ slice_eem <- function(eem, ex, em){
   em_slice <- data.frame(matrix(NA,nrow = nrow(eem_df), ncol = 2))
   em_slice[,1] <- as.numeric(rownames(eem_df))
   em_slice[,2] <- as.numeric(as.matrix(eem_df[,which(colnames(eem_df) == ex)]))
-  colnames(em_slice) <- c("Emission","Intensity")
-  em_slice <- pivot_longer(em_slice, cols = Emission, values_to = "Wavelength")
+  colnames(em_slice) <- c("emission","intensity")
+  em_slice <- pivot_longer(em_slice, cols = emission, values_to = "wavelength")
   # procude ex slice
   ex_slice <- data.frame(matrix(NA,nrow = ncol(eem_df), ncol = 2))
   ex_slice[,1] <- as.numeric(colnames(eem_df))
   ex_slice[,2] <- as.numeric(as.matrix(t(eem_df[which(rownames(eem_df) == em),])))
-  colnames(ex_slice) <- c("Excitation","Intensity")
-  ex_slice <- pivot_longer(ex_slice, cols = Excitation, values_to = "Wavelength")
+  colnames(ex_slice) <- c("excitation","intensity")
+  ex_slice <- pivot_longer(ex_slice, cols = excitation, values_to = "wavelength")
   # bind
   slices <- rbind(em_slice, ex_slice)
+  # numeric handling
+  slices %>%
+    mutate_at(vars(intensity, wavelength), as.numeric)
   # return
   slices
 }
