@@ -4,7 +4,13 @@
 \alias{eemdf_to_eem}
 \title{Convert a dataframe to an EEM object of the style used by EEM/eemR/staRdom.}
 \usage{
-eemdf_to_eem(eemdf, file, sample, location, gathered = FALSE)
+eemdf_to_eem(
+  eemdf,
+  file = NULL,
+  sample = NULL,
+  location = NULL,
+  gathered = FALSE
+)
 }
 \arguments{
 \item{eemdf}{the dataframe to be coerced to an EEM object.}

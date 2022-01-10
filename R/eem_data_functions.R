@@ -552,9 +552,9 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
 #' @export
 #'
 eemdf_to_eem <- function(eemdf,
-                         file,
-                         sample,
-                         location,
+                         file = NULL,
+                         sample = NULL,
+                         location = NULL,
                          gathered = FALSE){
   # code adapted from staRdom's .eem_csv importer.
   x <- eemdf
