@@ -681,31 +681,48 @@ get_eem_max_coords <- function(eem, verbose = FALSE){
 #' @export
 #'
 slice_eem <- function(eem, ex, em){
-  # coerce to data.frame
-  if(is.data.frame(eem)){
-  } else if(class(eem) == "eem"){
+  # input checks
+  if (is.data.frame(eem)) {
+  } else if (class(eem) == "eem") {
     eem_df <- as.data.frame(eem, gather = FALSE)
-  } else{
+  } else {
     stop("Please pass the function an object of class 'eem'")
   }
-  # produce em slice
-  em_slice <- data.frame(matrix(NA,nrow = nrow(eem_df), ncol = 2))
-  em_slice[,1] <- as.numeric(rownames(eem_df))
-  em_slice[,2] <- as.numeric(as.matrix(eem_df[,which(colnames(eem_df) == ex)]))
-  colnames(em_slice) <- c("emission","intensity")
-  em_slice <- pivot_longer(em_slice, cols = emission, values_to = "wavelength")
-  # procude ex slice
-  ex_slice <- data.frame(matrix(NA,nrow = ncol(eem_df), ncol = 2))
-  ex_slice[,1] <- as.numeric(colnames(eem_df))
-  ex_slice[,2] <- as.numeric(as.matrix(t(eem_df[which(rownames(eem_df) == em),])))
-  colnames(ex_slice) <- c("excitation","intensity")
-  ex_slice <- pivot_longer(ex_slice, cols = excitation, values_to = "wavelength")
-  # bind
+  # Extract emission values slice at given ex wavelength
+  if(ex %in% colnames(eem_df)){
+    em_slice <- data.frame(matrix(NA, nrow = nrow(eem_df), ncol = 2))
+    em_slice[, 1] <- as.numeric(rownames(eem_df))
+    em_slice[, 2] <- as.numeric(as.matrix(eem_df[, which(colnames(eem_df) == ex)]))
+    colnames(em_slice) <- c("emission", "intensity")
+    em_slice <- pivot_longer(em_slice, cols = emission, values_to = "wavelength")
+  } else {
+    ex <- binary_search_nearest(data = colnames(eem_df), value = ex)
+    em_slice <- data.frame(matrix(NA, nrow = nrow(eem_df), ncol = 2))
+    em_slice[, 1] <- as.numeric(rownames(eem_df))
+    em_slice[, 2] <- as.numeric(as.matrix(eem_df[, which(colnames(eem_df) == ex)]))
+    colnames(em_slice) <- c("emission", "intensity")
+    em_slice <- pivot_longer(em_slice, cols = emission, values_to = "wavelength")
+  }
+  # Extract excitation values slice at given em wavelength
+  if(em %in% rownames(eem_df)){
+    # Continue as normally
+    ex_slice <- data.frame(matrix(NA, nrow = ncol(eem_df), ncol = 2))
+    ex_slice[, 1] <- as.numeric(colnames(eem_df))
+    ex_slice[, 2] <- as.numeric(as.matrix(t(eem_df[which(rownames(eem_df) == em), ])))
+    colnames(ex_slice) <- c("excitation", "intensity")
+    ex_slice <- pivot_longer(ex_slice, cols = excitation, values_to = "wavelength")
+  } else {
+    # Oh no! Find nearest em value with binary search via data.table.
+    em <- binary_search_nearest(data = rownames(eem_df), value = em)
+    ex_slice <- data.frame(matrix(NA, nrow = ncol(eem_df), ncol = 2))
+    ex_slice[, 1] <- as.numeric(colnames(eem_df))
+    ex_slice[, 2] <- as.numeric(as.matrix(t(eem_df[which(rownames(eem_df) == em), ])))
+    colnames(ex_slice) <- c("excitation", "intensity")
+    ex_slice <- pivot_longer(ex_slice, cols = excitation, values_to = "wavelength")
+  }
+  # Combine
   slices <- rbind(em_slice, ex_slice)
-  # numeric handling
-  slices %>%
-    mutate_at(vars(intensity, wavelength), as.numeric)
-  # return
+  slices %>% mutate_at(vars(intensity, wavelength), as.numeric)
   slices
 }
 
