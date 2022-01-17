@@ -95,8 +95,15 @@ save_eemlist_pngs <- function(eemlist, contour = FALSE, output_dir = NULL){
 #' @export
 #'
 extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = NULL, contour = TRUE){
-  group_eemlist <- vector(mode = "list", length = 6)
+  group_eemlist <- vector(mode = "list", length = length(list_of_eemlists))
   class(group_eemlist) <- "eemlist"
+  counter = 0
+  group_eemlist <- lapply(list_of_eemlists, function(eem){
+    counter = counter + 1
+    list_of_eemlists[[counter]][[which_eem]]
+  })
+
+
   group_eemlist[[1]] <- list_of_eemlists[[1]][[which_eem]]
   group_eemlist[[2]] <- list_of_eemlists[[2]][[which_eem]]
   group_eemlist[[3]] <- list_of_eemlists[[3]][[which_eem]]
