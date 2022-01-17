@@ -303,7 +303,24 @@ extrpf_fmax <- function(pfmodel, eemlist){
   colnames(fmax_frame) <- c(paste0("Comp.", seq(1,ncol(pfmodel$A),1)))
   rownames(fmax_frame) <- unlist(lapply(eemlist,"[[",'sample'))
   for(f in seq_along(complist)){
-    frame_it <- peakpick_intensity(comp_peakpos = peakpositions[f,], eemlist = eemlist)
+    target_ex <- as.numeric(peakpositions[f,]$`Peak Excitation`)
+    target_em <- as.numeric(peakpositions[f,]$`Peak Emission`)
+    frame_it <- as.data.frame(matrix(NA,ncol = 1,nrow = length(eemlist)))
+    colnames(frame_it) <- c("Intensity")
+    for(e in seq_along(eemlist)){
+      eem_it <- as.data.frame(eemlist[[e]], gather = FALSE)
+      # index ex
+      ex_vals <- as.numeric(colnames(eem_it))
+      # index em
+      em_vals <- as.numeric(rownames(eem_it))
+      # get coords
+      closest_ex <- as.numeric(which.min(abs(ex_vals - target_ex)))
+      closest_em <- as.numeric(which.min(abs(em_vals - target_em)))
+      # extract intensity value
+      intensity_val_it <- eem_it[closest_em,closest_ex]
+      # add it to frame
+      frame_it[e,1] <- intensity_val_it
+    }
     fmax_frame[,f] <- frame_it$Intensity
     message("Comp ",f,"/",ncol(pfmodel$A)," complete")
   }
