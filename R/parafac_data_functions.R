@@ -277,3 +277,40 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
   comp_spectra
 }
 
+#' Derive component Fmax values for a given PARAFAC model and eemlist.
+#'
+#' @description Fluorescence intensity at the component maxima (peak Ex/Em wavelength) can be used to infer intensity.
+#'        Assuming a well-performing PARAFAC model, these values should correlate extremely well with the component
+#'        A-mode values/loadings.
+#' @param pfmodel A single PARAFAC model object containing any number of components.
+#' @param eemlist a list of eems in the staRdom/eemR compliant format.
+#'
+#' @export
+#'
+extrpf_fmax <- function(pfmodel, eemlist){
+  # Get pfcomp peak positions
+  complist <- vector("list", length = ncol(pfmodel$A))
+  peakpositions <- data.frame(matrix(NA,nrow = ncol(pfmodel$A)), ncol = 2)
+  colnames(peakpositions) <- c("Peak Excitation","Peak Emission")
+  rownames(peakpositions) <- c(paste0("Comp.", seq(1,ncol(pfmodel$A),1)))
+  for(c in seq_along(complist)){
+    spectra_it <- eemUtils::extrpf_peak_spectra(pfmodel, component = c)
+    peakpositions[c,2] <- spectra_it$max_em[1]
+    peakpositions[c,1] <- spectra_it$max_ex[1]
+  }
+  # Now use these positions to derive Fmax values
+  fmax_frame <- data.frame(matrix(NA,nrow = nrow(pfmodel$A), ncol = ncol(pfmodel$A)))
+  colnames(fmax_frame) <- c(paste0("Comp.", seq(1,ncol(pfmodel$A),1)))
+  rownames(fmax_frame) <- unlist(lapply(eemlist,"[[",'sample'))
+  for(f in seq_along(complist)){
+    frame_it <- peakpick_intensity(comp_peakpos = peakpositions[f,], eemlist = eemlist)
+    fmax_frame[,f] <- frame_it$Intensity
+    message("Comp ",f,"/",ncol(pfmodel$A)," complete")
+  }
+  fmax_frame <- fmax_frame %>%
+    rownames_to_column()
+  names(fmax_frame)[names(fmax_frame) == 'rowname'] <- 'sample'
+  return(fmax_frame)
+}
+
+
