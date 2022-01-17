@@ -337,7 +337,7 @@ extract_ramanpeak_areas <- function(RAMdat, range_lower = NULL, range_upper = 50
       sg2 = smooth(g)
       sg <- as.matrix(sg)
       #Identify sequences of positive and negative gradients
-      p = matrix(0,nrow=length(sg),length=1)
+      p = matrix(0,nrow=length(sg),ncol=1)
       n = p
       sq = sequence - 1
       for (i in seq_along(1:length(sg))){
