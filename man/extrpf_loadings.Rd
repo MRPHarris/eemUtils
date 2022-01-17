@@ -2,17 +2,18 @@
 % Please edit documentation in R/parafac_data_functions.R
 \name{extrpf_loadings}
 \alias{extrpf_loadings}
-\title{Extract fluorescence intensity loadings from a list of PARAFAC models.}
+\title{Extract fluorescence intensity loadings from a PARAFAC model.}
 \usage{
-extrpf_loadings(pfmodel_list, by_index = FALSE)
+extrpf_loadings(pfmodel, by_index = FALSE)
 }
 \arguments{
-\item{pfmodel_list}{A list of PARAFAC models, typically an output from stardom::eem_parafac()}
+\item{pfmodel}{A PARAFAC model object containing any number of components.}
 
 \item{by_index}{TRUE/FALSE index the loadings by the sample names via registry matching. Requires numerals in the sample names.}
 }
 \description{
 Extract the per-sample modeled intensity loadings for each component
-      from a list of PARAFAC models. Optional numeric indexing of sample names
-      using regmatching, assuming there are numerals to extract.
+      from a PARAFAC models. Optional numeric indexing of sample names
+      using regmatching, assuming there are numerals to extract. Use lapply for
+      multiple models.
 }
