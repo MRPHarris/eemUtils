@@ -248,7 +248,7 @@ get_pfload_percent <- function(loadings){
 #'
 #' @export
 #'
-get_pf_peak_spectra <- function(pfmodel, component = 1){
+extrpf_peak_spectra <- function(pfmodel, component = 1){
   pfres <- pfmodel # Code adapted from staRdom package; naming will reflect this.
   names = TRUE
   c <- eempf_comp_mat(pfres) # get matrices of all the comps.

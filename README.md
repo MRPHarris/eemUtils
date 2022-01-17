@@ -17,7 +17,8 @@ functions from eemR, staRdom or EEM - thus, if you use the functions
 from this package, please allocate proper credit to those packages and
 their authors.
 
-This package is a work in progress. Always back up your data!
+This package is a work in progress, and is subject to change. Always
+back up your data!
 
 If you have any questions or comments, I can be reached at
 <m.r.p.harris@keele.ac.uk>.
@@ -91,15 +92,16 @@ intensity.
 #### extract\_ramanpeak\_areas
 
 This function incorporates two methods in order to find the area under
-the Raman peak of water, for EEM data Raman Unit normalisation purposes.
-The first method utilises a port of the MATLAB package drEEM’s
+the Raman peak of water, for EEM data Raman normalisation purposes. The
+first method utilises a port of the MATLAB package drEEM’s
 RamanIntegrationRange function, which uses adjustable gradient detection
-to identify the start and end of the Raman peak. The second method is a
+to identify the start and end of the Raman peak. The method is presented
+and discussed at length in Murphy, 2011. The second method is a
 straightforward, fixed-range integration used by the Aqualog
 fluorometer, which assumes the Raman peak extends from 380nm to 410nm at
 350nm excitation.
 
-Some sample Raman curve spectra are included in this package as below.
+Some sample Raman curve spectra are included in the package as below.
 
 ``` r
 library(pacman)
@@ -161,11 +163,19 @@ has been removed, as it is no longer useful.
 01/10/21 \| `ggeem2()` now has multi-plot support, and inherits
 staRdom::ggeem()’s class handling.
 
+17/01/22 \| Various bug fixes. Gradually removing
+extrpf\_spectra\_or\_eems(), as that workflow and associated functions
+have already been superseded by other functions in this package.
+
 ## References
 
 Massicotte, P. (2019). eemR: Tools for Pre-Processing
 Emission-Excitation-Matrix (EEM) Fluorescence Data. R package version
 1.0.1. <https://CRAN.R-project.org/package=eemR>
+
+Murphy, K. R. (2011). A Note on Determining the Extent of the Water
+Raman Peak in Fluorescence Spectroscopy. Applied Spectroscopy, 65(2),
+233–236. <https://doi.org/10.1366/10-06136>
 
 Murphy, K. R., Stedmon, C. A., Graeber, D., & Bro, R. (2013).
 Fluorescence spectroscopy and multi-way techniques. PARAFAC. *Analytical
