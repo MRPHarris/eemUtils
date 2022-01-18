@@ -164,8 +164,12 @@ has been removed, as it is no longer useful.
 staRdom::ggeem()’s class handling.
 
 17/01/22 \| Various bug fixes. Gradually removing
-extrpf\_spectra\_or\_eems(), as that workflow and associated functions
+`extrpf_spectra_or_eems()`, as that workflow and associated functions
 have already been superseded by other functions in this package.
+
+18/01/22 \| Removed `extrpf_spectra_or_eems()`. Functionality provided
+by the functions `extrpf_peak_spectra()` and `extrpf_eems()`, which are
+easier to use and have more efficient syntax.
 
 ## References
 
