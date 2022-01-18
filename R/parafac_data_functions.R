@@ -282,7 +282,7 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
 #'
 #' @export
 #'
-extrpf_fmax <- function(pfmodel, eemlist){
+extrpf_peak_intensities <- function(pfmodel, eemlist){
   # Get pfcomp peak positions
   complist <- vector("list", length = ncol(pfmodel$A))
   peakpositions <- data.frame(matrix(NA,nrow = ncol(pfmodel$A)), ncol = 2)
