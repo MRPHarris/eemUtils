@@ -83,7 +83,7 @@ extrpf_loadings <- function(pfmodel, by_index = FALSE){
 #'
 extrpf_loadings_denorm <- function(pfmodel, eemlist, type = "short"){
   # Get max vals
-  maxvals <- get_max_norm_values(eemlist)
+  maxvals <- eemlist_fmax_values(eemlist)
   # Get loadings
   loadings_frame <- extrpf_loadings(pfmodel)[,2:4]
   newframe <- apply(loadings_frame,2,function(col){
