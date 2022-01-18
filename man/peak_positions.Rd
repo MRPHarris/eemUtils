@@ -7,9 +7,9 @@
 peak_positions(modeled_spectra)
 }
 \arguments{
-\item{modeled_spectra}{PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2).}
+\item{modeled_spectra}{PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2)}
 }
 \description{
-Determine the Ex/Em peak position of a PARAFAC component. Takes
+DEFUNCT Determine the Ex/Em peak position of a PARAFAC component. Takes
      an output from extrpf_spectra_or_eems(type = 2).
 }

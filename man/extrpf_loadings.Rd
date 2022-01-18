@@ -7,9 +7,9 @@
 extrpf_loadings(pfmodel, by_index = FALSE)
 }
 \arguments{
-\item{pfmodel}{A PARAFAC model object containing any number of components.}
+\item{pfmodel}{A PARAFAC model object containing any number of components}
 
-\item{by_index}{TRUE/FALSE index the loadings by the sample names via registry matching. Requires numerals in the sample names.}
+\item{by_index}{TRUE/FALSE index the loadings by the sample names via registry matching. Requires numerals in the sample names}
 }
 \description{
 Extract the per-sample modeled intensity loadings for each component

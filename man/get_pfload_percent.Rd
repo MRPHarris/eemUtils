@@ -7,7 +7,7 @@
 get_pfload_percent(loadings)
 }
 \arguments{
-\item{loadings}{An output data frame from extrpf_loadings().}
+\item{loadings}{An output data frame from extrpf_loadings()}
 }
 \description{
 Determine the per-sample percentage contribution of each PARAFAC component

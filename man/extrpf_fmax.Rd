@@ -7,9 +7,9 @@
 extrpf_fmax(pfmodel, eemlist)
 }
 \arguments{
-\item{pfmodel}{A single PARAFAC model object containing any number of components.}
+\item{pfmodel}{A single PARAFAC model object containing any number of components}
 
-\item{eemlist}{a list of eems in the staRdom/eemR compliant format.}
+\item{eemlist}{a list of eems in the staRdom/eemR compliant format}
 }
 \description{
 Fluorescence intensity at the component maxima (peak Ex/Em wavelength) can be used to infer intensity.

@@ -9,7 +9,7 @@ Generate_CORCONDIA(pfmodel, eemlist)
 \arguments{
 \item{pfmodel}{A group of PARAFAC model objects, typically outputs from staRdom::eem_parafac()}
 
-\item{eemlist}{The group of EEMs used to run the above PARAFAC model.}
+\item{eemlist}{The group of EEMs used to run the above PARAFAC model}
 }
 \description{
 A simple wrapper for stardom::eempf_corcondia().

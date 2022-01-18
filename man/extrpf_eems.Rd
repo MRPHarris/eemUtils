@@ -7,7 +7,7 @@
 extrpf_eems(pfmodel)
 }
 \arguments{
-\item{pfmodel}{a PARAFAC model object containing one or more components.}
+\item{pfmodel}{a PARAFAC model object containing one or more components}
 }
 \description{
 Pulls out the modelled EEMs from a PARAFAC model, in the standard eemlist format,

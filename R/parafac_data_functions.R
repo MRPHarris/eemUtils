@@ -5,7 +5,7 @@
 #' @description A simple wrapper for stardom::eempf_corcondia().
 #'
 #' @param pfmodel A group of PARAFAC model objects, typically outputs from staRdom::eem_parafac()
-#' @param eemlist The group of EEMs used to run the above PARAFAC model.
+#' @param eemlist The group of EEMs used to run the above PARAFAC model
 #'
 #' @export
 #'
@@ -44,8 +44,8 @@ Generate_CORCONDIA <- function(pfmodel,eemlist){
 #'       using regmatching, assuming there are numerals to extract. Use lapply for
 #'       multiple models.
 #'
-#' @param pfmodel A PARAFAC model object containing any number of components.
-#' @param by_index TRUE/FALSE index the loadings by the sample names via registry matching. Requires numerals in the sample names.
+#' @param pfmodel A PARAFAC model object containing any number of components
+#' @param by_index TRUE/FALSE index the loadings by the sample names via registry matching. Requires numerals in the sample names
 #'
 #' @export
 #'
@@ -69,12 +69,48 @@ extrpf_loadings <- function(pfmodel, by_index = FALSE){
   Loadings
 }
 
+#' Multiply the loadings values of PARAFAC components by normalisation factors
+#'
+#' @description A PARAFAC model fed with normalised eems outputs by default loadings that are less useful for direct
+#'       sample-to-sample comparison. This can be remedied by multiplying the loadings by each eem fmax value (i.e. the
+#'       normalisation factors used to normalise the eems originally).
+#'
+#' @param pfmodel a PARAFAC model object, typically an individual ouptut from staRdom::eem_parafaC()
+#' @param eemlist a list of eem objects compliant with the staRdom/eemR framework
+#' @param type short or long format. Short by default. Long format data works better for grouping in ggplot
+#'
+#' @export
+#'
+extrpf_loadings_denorm <- function(pfmodel, eemlist, type = "short"){
+  # Get max vals
+  maxvals <- get_max_norm_values(eemlist)
+  # Get loadings
+  loadings_frame <- extrpf_loadings(pfmodel)[,2:4]
+  newframe <- apply(loadings_frame,2,function(col){
+    col*maxvals
+  }) %>%
+    data.frame()
+  newframe <- newframe %>%
+    `colnames<-`(c(paste0("Comp.",seq(1,ncol(newframe),1)))) %>%
+    'rownames<-'(unlist(lapply(eemlist,"[[",'sample'))) %>%
+    rownames_to_column(var = 'sample')
+  if(type == "short"){
+    newframe
+  } else if(type == "long"){
+    newframe <- newframe %>%
+      pivot_longer(cols = c(2:4))
+  } else{
+    stop("Unknown 'type'. Please input either 'short' or 'long'")
+  }
+}
+
+
 #' Extract the modelled EEMs from a given PARAFAC model as an eemlist.
 #'
 #' @description Pulls out the modelled EEMs from a PARAFAC model, in the standard eemlist format,
 #'      comprised of eem objects compliant with the staRdom/EEM/eemR framework.
 #'
-#' @param pfmodel a PARAFAC model object containing one or more components.
+#' @param pfmodel a PARAFAC model object containing one or more components
 #'
 #' @export
 #'
@@ -93,10 +129,10 @@ extrpf_eems <- function(pfmodel){
 
 #' Determines the peak positions for a PARAFAC modeled component.
 #'
-#' @description Determine the Ex/Em peak position of a PARAFAC component. Takes
+#' @description DEFUNCT Determine the Ex/Em peak position of a PARAFAC component. Takes
 #'      an output from extrpf_spectra_or_eems(type = 2).
 #'
-#' @param modeled_spectra PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2).
+#' @param modeled_spectra PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2)
 #'
 #' @export
 #'
@@ -127,7 +163,7 @@ peak_positions <- function(modeled_spectra){
 #' @description Determine the per-sample percentage contribution of each PARAFAC component
 #'       across a given set of sample PARAFAC intensity loadings.
 #'
-#' @param loadings An output data frame from extrpf_loadings().
+#' @param loadings An output data frame from extrpf_loadings()
 #'
 #' @export
 #'
@@ -164,8 +200,8 @@ get_pfload_percent <- function(loadings){
 #'
 #' @description An alternative to the extrpf_peaks_or_eems. Simply extract the spectra at the peak for a given component.
 #'
-#' @param pfmodel A PARAFAC model object a la staRdom.
-#' @param component Extract spectra for this component. Numeric.
+#' @param pfmodel A PARAFAC model object a la staRdom
+#' @param component Extract spectra for this component. Numeric
 #'
 #' @export
 #'
@@ -203,8 +239,9 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
 #' @description Fluorescence intensity at the component maxima (peak Ex/Em wavelength) can be used to infer intensity.
 #'        Assuming a well-performing PARAFAC model, these values should correlate extremely well with the component
 #'        A-mode values/loadings.
-#' @param pfmodel A single PARAFAC model object containing any number of components.
-#' @param eemlist a list of eems in the staRdom/eemR compliant format.
+#'
+#' @param pfmodel A single PARAFAC model object containing any number of components
+#' @param eemlist a list of eems in the staRdom/eemR compliant format
 #'
 #' @export
 #'
