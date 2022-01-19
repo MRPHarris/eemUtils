@@ -242,24 +242,43 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
 #'
 #' @param pfmodel A single PARAFAC model object containing any number of components
 #' @param eemlist a list of eems in the staRdom/eemR compliant format
+#' @param component NULL or numeric. One or more components to extract fmax for. If NULL, all components targeted.
 #'
 #' @export
 #'
-extrpf_fmax <- function(pfmodel, eemlist){
+extrpf_fmax <- function(pfmodel, eemlist, component = NULL){
+  if(!is.null(component)){
+    if(length(component) > 1){
+      comps <- component
+      # more than one component
+      fmax_frame <- data.frame(matrix(NA,nrow = nrow(pfmodel$A), ncol = ncol(pfmodel$A[,c(component)])))
+      colnames(fmax_frame) <- c(paste0("Comp.", comps))
+    } else {
+      # specific component chosen.
+      comps <- component
+      fmax_frame <- data.frame(matrix(NA,nrow = nrow(pfmodel$A), ncol = 1))
+      colnames(fmax_frame) <- c(paste0("Comp.", component))
+    }
+  } else {
+    # All components.
+    comps <- seq(1,ncol(pfmodel$A),1)
+    fmax_frame <- data.frame(matrix(NA,nrow = nrow(pfmodel$A), ncol = ncol(pfmodel$A)))
+    colnames(fmax_frame) <- c(paste0("Comp.", comps))
+  }
+  rownames(fmax_frame) <- unlist(lapply(eemlist,"[[",'sample'))
   # Get pfcomp peak positions
-  complist <- vector("list", length = ncol(pfmodel$A))
-  peakpositions <- data.frame(matrix(NA,nrow = ncol(pfmodel$A)), ncol = 2)
+  complist <- vector("list", length = ncol(fmax_frame))
+  peakpositions <- data.frame(matrix(NA,nrow = ncol(fmax_frame)), ncol = 2)
   colnames(peakpositions) <- c("Peak Excitation","Peak Emission")
-  rownames(peakpositions) <- c(paste0("Comp.", seq(1,ncol(pfmodel$A),1)))
+  rownames(peakpositions) <- colnames(fmax_frame)
   for(c in seq_along(complist)){
-    spectra_it <- eemUtils::extrpf_peak_spectra(pfmodel, component = c)
+    comp <- comps[c]
+    spectra_it <- eemUtils::extrpf_peak_spectra(pfmodel, component = comp)
     peakpositions[c,2] <- spectra_it$max_em[1]
     peakpositions[c,1] <- spectra_it$max_ex[1]
   }
   # Now use these positions to derive Fmax values
-  fmax_frame <- data.frame(matrix(NA,nrow = nrow(pfmodel$A), ncol = ncol(pfmodel$A)))
-  colnames(fmax_frame) <- c(paste0("Comp.", seq(1,ncol(pfmodel$A),1)))
-  rownames(fmax_frame) <- unlist(lapply(eemlist,"[[",'sample'))
+
   for(f in seq_along(complist)){
     target_ex <- as.numeric(peakpositions[f,]$`Peak Excitation`)
     target_em <- as.numeric(peakpositions[f,]$`Peak Emission`)
@@ -280,7 +299,7 @@ extrpf_fmax <- function(pfmodel, eemlist){
       frame_it[e,1] <- intensity_val_it
     }
     fmax_frame[,f] <- frame_it$Intensity
-    message("Comp ",f,"/",ncol(pfmodel$A)," complete")
+    message("Comp ",comps[f]," complete")
   }
   fmax_frame <- fmax_frame %>%
     rownames_to_column()

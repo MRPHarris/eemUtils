@@ -4,12 +4,14 @@
 \alias{extrpf_fmax}
 \title{Derive component Fmax values for a given PARAFAC model and eemlist.}
 \usage{
-extrpf_fmax(pfmodel, eemlist)
+extrpf_fmax(pfmodel, eemlist, component = NULL)
 }
 \arguments{
 \item{pfmodel}{A single PARAFAC model object containing any number of components}
 
 \item{eemlist}{a list of eems in the staRdom/eemR compliant format}
+
+\item{component}{NULL or numeric. One or more components to extract fmax for. If NULL, all components targeted.}
 }
 \description{
 Fluorescence intensity at the component maxima (peak Ex/Em wavelength) can be used to infer intensity.
