@@ -276,7 +276,7 @@ fmax_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRUE, labels
       dplyr::select(paste0("Comp.",component),sample) %>%
       'colnames<-'(c(paste0("loading"),"sample"))
   }
-  fmax <- extrpf_fmax(pfmodel, eemlist) %>%
+  fmax <- extrpf_fmax(pfmodel, eemlist, component = component) %>%
     dplyr::select(paste0("Comp.",component),sample) %>%
     'colnames<-'(c(paste0("fmax"),"sample"))
   # Bind, pivot
