@@ -546,6 +546,8 @@ ssc_more <- function (mat1, mat2, tcc = FALSE) {
 #' @param mat2 a matrix
 #' @param normalise TRUE/FALSE to normalise the matrices before comparison and subsequent plotting.
 #'
+#' @export
+#'
 ssc_plot <- function(mat1, mat2, normalise = TRUE){
   mat_labels <- c(deparse(substitute(mat1)), deparse(substitute(mat2)))
   if(!all(names(mat1) == names(mat2))){
