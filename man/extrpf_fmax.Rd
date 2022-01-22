@@ -4,7 +4,13 @@
 \alias{extrpf_fmax}
 \title{Derive component Fmax values for a given PARAFAC model and eemlist.}
 \usage{
-extrpf_fmax(pfmodel, eemlist, component = NULL)
+extrpf_fmax(
+  pfmodel,
+  eemlist,
+  component = NULL,
+  type = "fmax",
+  denormalise = FALSE
+)
 }
 \arguments{
 \item{pfmodel}{A single PARAFAC model object containing any number of components}
@@ -12,6 +18,10 @@ extrpf_fmax(pfmodel, eemlist, component = NULL)
 \item{eemlist}{a list of eems in the staRdom/eemR compliant format}
 
 \item{component}{NULL or numeric. One or more components to extract fmax for. If NULL, all components targeted.}
+
+\item{type}{two types of values are returned. 'fmax' for rescaled loadings (* BC mode maxima after Murphy et al., 2013), or "peakpick" for a per-sample intensity value picked at the BC mode maxima coordinates.}
+
+\item{denormalise}{denormalise loadings prior to fmax calculation. Not necessary for peak-picking at the component spectra maxima.}
 }
 \description{
 Fluorescence intensity at the component maxima (peak Ex/Em wavelength) can be used to infer intensity.
