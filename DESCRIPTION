@@ -16,6 +16,7 @@ Imports:
   eemR,
   EEM,
   ggplot2,
+  ggpmisc,
   plotly,
   cowplot,
   tidyverse,

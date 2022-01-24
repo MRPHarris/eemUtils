@@ -270,10 +270,9 @@ eempf_comps3D_revex <- function (pfmodel, which = NULL){
 #' @export
 #'
 fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRUE, labels = FALSE, label_threshold = 2){
-
   fmax <- extrpf_fmax(pfmodel, eemlist, component = component, type = 'fmax', denormalise = denorm) %>%
     dplyr::select(paste0("Comp.",component),sample) %>%
-    'colnames<-'(c(paste0("peakint"),"sample"))
+    'colnames<-'(c(paste0("fmax"),"sample"))
   peakint <- extrpf_fmax(pfmodel, eemlist, component = component, type = 'peakpick') %>%
     dplyr::select(paste0("Comp.",component),sample) %>%
     'colnames<-'(c(paste0("peakint"),"sample"))
