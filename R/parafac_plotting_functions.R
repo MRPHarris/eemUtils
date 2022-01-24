@@ -264,27 +264,21 @@ eempf_comps3D_revex <- function (pfmodel, which = NULL){
 #' @param eemlist An eemlist object.
 #' @param component Integer. Which PARAFAC component to plot?
 #' @param denorm TRUE/FALSE denormalise the loadings based upon eemlist (not parafac) fmax values?
-#' @param type for extrpf_fmax: one of either 'fmax' or 'peakpick'. See extrpf_fmax() doc for more info.
 #' @param labels TRUE/FALSE extract numeric values from sample names and use these as labels. values/10 by default to match a lexicographic scheme.
 #' @param label_threshold Integer. Values lying above this number multiplied by the mean will be given labels via geom_text
 #'
 #' @export
 #'
-fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRUE, type = 'peakpick', labels = FALSE, label_threshold = 2){
-  if(isTRUE(denorm)){
-    loading <- extrpf_loadings_denorm(pfmodel, eemlist) %>%
+fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRUE, labels = FALSE, label_threshold = 2){
+
+  fmax <- extrpf_fmax(pfmodelcomponent = component, type = 'fmax', denormalise = denorm) %>%
       dplyr::select(paste0("Comp.",component),sample) %>%
       'colnames<-'(c(paste0("loading"),"sample"))
-  } else {
-    loading <- extrpf_loadings(pfmodel) %>%
-      dplyr::select(paste0("Comp.",component),sample) %>%
-      'colnames<-'(c(paste0("loading"),"sample"))
-  }
-  fmax <- extrpf_fmax(pfmodel, eemlist, component = component, type = type) %>%
+  peakint <- extrpf_fmax(pfmodel, eemlist, component = component, type = 'peakpick') %>%
     dplyr::select(paste0("Comp.",component),sample) %>%
-    'colnames<-'(c(paste0("fmax"),"sample"))
+    'colnames<-'(c(paste0("peakint"),"sample"))
   # Bind, pivot
-  frame <- merge(loading,fmax)
+  frame <- merge(fmax,peakint)
   if(isTRUE(labels)){
     frame$index <- as.numeric(regmatches(frame$sample,gregexpr("[[:digit:]]+", frame$sample)))
   }
@@ -293,7 +287,7 @@ fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRU
   colnames(df) <- c("x","y")
   my.formula <- y ~ x
   # ggplot
-  plt <- ggplot(data = frame, aes(x = loading, y = fmax)) +
+  plt <- ggplot(data = frame, aes(x = fmax, y = peakint)) +
     geom_smooth(method = 'lm') +
     stat_poly_eq(data = df, formula = my.formula,
                  aes(x = x, y = y, label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
@@ -301,7 +295,8 @@ fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRU
     geom_point(shape = 21, color = "black", fill = "white", size = 1.5) +
     scale_x_continuous(expand = c(0,0), limits = c(0-max(frame$loading/50), ceiling(max(frame$loading)), breaks = seq(0,ceiling(max(frame$loading)),1))) +
     scale_y_continuous(expand = c(0,0), limits = c(0-max(frame$fmax/50),ceiling(max(frame$fmax))), breaks = seq(0,ceiling(max(frame$fmax)),1)) +
-    theme_cowplot(12)
+    theme_cowplot(12) +
+    labs(x = "Fmax", y = "Component peak intensity")
   if(isTRUE(labels)){
     # label samples only greater than certain value
     if(label_threshold == 0){

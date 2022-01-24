@@ -9,7 +9,6 @@ fmax_peakpick_corrplot(
   eemlist,
   component = 1,
   denorm = TRUE,
-  type = "peakpick",
   labels = FALSE,
   label_threshold = 2
 )
@@ -22,8 +21,6 @@ fmax_peakpick_corrplot(
 \item{component}{Integer. Which PARAFAC component to plot?}
 
 \item{denorm}{TRUE/FALSE denormalise the loadings based upon eemlist (not parafac) fmax values?}
-
-\item{type}{for extrpf_fmax: one of either 'fmax' or 'peakpick'. See extrpf_fmax() doc for more info.}
 
 \item{labels}{TRUE/FALSE extract numeric values from sample names and use these as labels. values/10 by default to match a lexicographic scheme.}
 
