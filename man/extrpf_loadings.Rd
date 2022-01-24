@@ -4,7 +4,7 @@
 \alias{extrpf_loadings}
 \title{Extract fluorescence intensity loadings from a PARAFAC model.}
 \usage{
-extrpf_loadings(pfmodel, by_index = FALSE)
+extrpf_loadings(pfmodel, by_index = FALSE, fill_stat = FALSE)
 }
 \arguments{
 \item{pfmodel}{A PARAFAC model object containing any number of components}

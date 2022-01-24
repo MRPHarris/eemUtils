@@ -49,21 +49,26 @@ Generate_CORCONDIA <- function(pfmodel,eemlist){
 #'
 #' @export
 #'
-extrpf_loadings <- function(pfmodel, by_index = FALSE){
+extrpf_loadings <- function(pfmodel, by_index = FALSE, fill_stat = FALSE){
   model <- pfmodel[["A"]]
   LoadingsA <- as.data.frame(model)
   Loadings <- as.data.frame(model)
   comp_num <- vector(mode = "list", length = ncol(Loadings))
-  for (i in seq_along(comp_num)) {
-    cstat <- data.frame(matrix((paste0("C", i)),nrow(Loadings), 1))
-    Loadings <- cbind.data.frame(Loadings, cstat)
-    col_index = i + (ncol(LoadingsA))
-    colnames(Loadings)[col_index] <- paste0("C",i, "_Status")
+  if(isTRUE(fill_stat)){
+    for (i in seq_along(comp_num)) {
+      cstat <- data.frame(matrix((paste0("C", i)),nrow(Loadings), 1))
+      Loadings <- cbind.data.frame(Loadings, cstat)
+      col_index = i + (ncol(LoadingsA))
+      colnames(Loadings)[col_index] <- paste0("C",i, "_Status")
+    }
   }
-  data.table::setDT(Loadings, keep.rownames = TRUE)[]
-  colnames(Loadings)[1] <- c("Sample_Name")
+  # data.table::setDT(Loadings, keep.rownames = TRUE)[]
+  Loadings <- Loadings %>%
+    rownames_to_column("sample") %>%
+    select(sample, everything())
+  colnames(Loadings)[1] <- c("sample")
   if (isTRUE(by_index)) {
-    index <- as.numeric(regmatches(Loadings$Sample_Name,gregexpr("[[:digit:]]+", Loadings$Sample_Name)))
+    index <- as.numeric(regmatches(Loadings$sample,gregexpr("[[:digit:]]+", Loadings$sample)))
     Loadings <- cbind(Loadings, index)
   }
   Loadings
@@ -292,7 +297,7 @@ extrpf_fmax <- function(pfmodel, eemlist, component = NULL, type = "fmax", denor
     return(fmax_frame)
   } else if(type == "peakpick"){
     # Get pfcomp peak positions
-    complist <- vector("list", length = ncol(fmax_frame))
+    complist <- vector("list", length = length(comps))
     peakpositions <- data.frame(matrix(NA,nrow = ncol(fmax_frame)), ncol = 2)
     colnames(peakpositions) <- c("Peak Excitation","Peak Emission")
     rownames(peakpositions) <- colnames(fmax_frame)
@@ -322,12 +327,9 @@ extrpf_fmax <- function(pfmodel, eemlist, component = NULL, type = "fmax", denor
         # add it to frame
         frame_it[e,1] <- intensity_val_it
       }
-      fmax_frame[,f] <- frame_it$Intensity
+      fmax_frame[,which(colnames(fmax_frame) == paste0("Comp.",comps[f]))] <- frame_it$Intensity
       message("Comp ",comps[f]," complete")
     }
-    fmax_frame <- fmax_frame %>%
-      rownames_to_column()
-    names(fmax_frame)[names(fmax_frame) == 'rowname'] <- 'sample'
     return(fmax_frame)
   } else {
     stop("Please supply type as either 'fmax' or 'peakpick'")
