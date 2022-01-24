@@ -292,19 +292,19 @@ fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRU
                  aes(x = x, y = y, label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
                  parse = TRUE) +
     geom_point(shape = 21, color = "black", fill = "white", size = 1.5) +
-    scale_x_continuous(expand = c(0,0), limits = c(0-max(frame$loading/50), ceiling(max(frame$loading)), breaks = seq(0,ceiling(max(frame$loading)),1))) +
-    scale_y_continuous(expand = c(0,0), limits = c(0-max(frame$fmax/50),ceiling(max(frame$fmax))), breaks = seq(0,ceiling(max(frame$fmax)),1)) +
+    scale_x_continuous(expand = c(0,0), limits = c(0-max(frame$fmax/50), ceiling(max(frame$fmax)), breaks = seq(0,ceiling(max(frame$fmax)),1))) +
+    scale_y_continuous(expand = c(0,0), limits = c(0-max(frame$peakint/50),ceiling(max(frame$peakint))), breaks = seq(0,ceiling(max(frame$peakint)),1)) +
     theme_cowplot(12) +
     labs(x = "Fmax", y = "Component peak intensity")
   if(isTRUE(labels)){
     # label samples only greater than certain value
     if(label_threshold == 0){
       plt <- plt +
-        geom_text(data = frame, aes(x = loading, y = fmax, label = ifelse(loading > 0 | fmax > 0 ,as.character(index/10),'')),
+        geom_text(data = frame, aes(x = fmax, y = peakint, label = ifelse(loading > 0 | fmax > 0 ,as.character(index/10),'')),
                   size = 2, hjust = -0.3, vjust = -0.3)
     } else {
       plt <- plt +
-        geom_text(data = frame, aes(x = loading, y = fmax, label = ifelse(loading > (label_threshold*mean(loading)) | fmax > (label_threshold*mean(fmax)) ,as.character(index/10),'')),
+        geom_text(data = frame, aes(x = fmax, y = peakint, label = ifelse(fmax > (label_threshold*mean(fmax)) | peakint > (label_threshold*mean(peakint)) ,as.character(index/10),'')),
                   size = 3, hjust = -0.3, vjust = -0.3)
     }
   }
