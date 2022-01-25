@@ -250,6 +250,7 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
 #' @param component NULL or numeric. One or more components to extract fmax for. If NULL, all components targeted.
 #' @param type two types of values are returned. 'fmax' for rescaled loadings (* BC mode maxima after Murphy et al., 2013), or "peakpick" for a per-sample intensity value picked at the BC mode maxima coordinates.
 #' @param denormalise denormalise loadings prior to fmax calculation. Not necessary for peak-picking at the component spectra maxima.
+#'
 #' @export
 #'
 extrpf_fmax <- function(pfmodel, eemlist, component = NULL, type = "fmax", denormalise = FALSE){
@@ -336,4 +337,29 @@ extrpf_fmax <- function(pfmodel, eemlist, component = NULL, type = "fmax", denor
   }
 }
 
+#' Extract the per-EEM % contributions of each component
+#'
+#' @description Return the percent contribution of each component to the modelled fluorescence response of each sample, using
+#'      the modelled loadings
+#'
+#' @param pfmodel a PARAFAC model object
+#' @param eemlist supply the eemlist used for denormalisation. Only necessary if denormalise is set to TRUE.
+#' @param denormalise TRUE/FALSE to denormalise the loadings prior to the % calculation\
+#'
+#' @export
+#'
+extrpf_loadings_percent <- function(pfmodel, eemlist, denormalise = FALSE){
+  if(isTRUE(denormalise)){
+    loadings <- extrpf_loadings_denorm(pfmodel, eemlist)
+  } else {
+    loadings <- extrpf_loadings(pfmodel)
+  }
+  FI_totals <- rowSums(loadings[,2:ncol(loadings)])
+  pct_contrib <- loadings[,2:ncol(loadings)] %>%
+    mutate_all(.,function(col){(col/FI_totals)*100})
+  pct_contrib$sample <- loadings$sample
+  pct_contrib <- pct_contrib %>%
+    select('sample',everything())
+  pct_contrib
+}
 
