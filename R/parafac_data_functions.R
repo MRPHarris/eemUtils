@@ -90,7 +90,7 @@ extrpf_loadings_denorm <- function(pfmodel, eemlist, type = "short"){
   # Get max vals
   maxvals <- eemlist_fmax_values(eemlist)
   # Get loadings
-  loadings_frame <- extrpf_loadings(pfmodel)[,2:4]
+  loadings_frame <- extrpf_loadings(pfmodel)[,2:ncol(pfmodel$A)]
   newframe <- apply(loadings_frame,2,function(col){
     col*maxvals
   }) %>%
@@ -103,7 +103,7 @@ extrpf_loadings_denorm <- function(pfmodel, eemlist, type = "short"){
     newframe
   } else if(type == "long"){
     newframe <- newframe %>%
-      pivot_longer(cols = c(2:4))
+      pivot_longer(cols = c(2:ncol(newframe)))
   } else{
     stop("Unknown 'type'. Please input either 'short' or 'long'")
   }
