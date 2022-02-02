@@ -87,24 +87,22 @@ extrpf_loadings <- function(pfmodel, by_index = FALSE, fill_stat = FALSE){
 #' @export
 #'
 extrpf_loadings_denorm <- function(pfmodel, eemlist, type = "short"){
-  # Get max vals
   maxvals <- eemlist_fmax_values(eemlist)
-  # Get loadings
-  loadings_frame <- extrpf_loadings(pfmodel)[,2:ncol(pfmodel$A)+1]
-  newframe <- apply(loadings_frame,2,function(col){
-    col*maxvals
-  }) %>%
-    data.frame()
-  newframe <- newframe %>%
-    `colnames<-`(c(paste0("Comp.",seq(1,ncol(newframe),1)))) %>%
-    'rownames<-'(unlist(lapply(eemlist,"[[",'sample'))) %>%
-    rownames_to_column(var = 'sample')
-  if(type == "short"){
+  fm <- extrpf_loadings(pfmodel)
+  loadings_frame <- fm[,2:ncol(fm)]
+  newframe <- apply(loadings_frame, 2, function(col) {
+    col * maxvals
+  }) %>% data.frame()
+  newframe <- newframe %>% `colnames<-`(c(paste0("Comp.",
+                                                 seq(1, ncol(newframe), 1)))) %>% `rownames<-`(unlist(lapply(eemlist,
+                                                                                                             "[[", "sample"))) %>% rownames_to_column(var = "sample")
+  if (type == "short") {
     newframe
-  } else if(type == "long"){
-    newframe <- newframe %>%
-      pivot_longer(cols = c(2:ncol(newframe)))
-  } else{
+  }
+  else if (type == "long") {
+    newframe <- newframe %>% pivot_longer(cols = c(2:ncol(newframe)))
+  }
+  else {
     stop("Unknown 'type'. Please input either 'short' or 'long'")
   }
 }
