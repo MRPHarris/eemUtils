@@ -30,9 +30,9 @@ Generate_CORCONDIA <- function(pfmodel,eemlist){
   colnames(Core_Consistencies) <- c('Core Consistency')                                      # column name for the CCD frame
   print(Core_Consistencies)                                                                  # print the CCD frame
   message("\n","Core Consistency Diagnostic/s generated for all models within ", deparse(substitute(pfmodel)),".","\n",
-          "For information on the Core Consistency Diagnostic, see Bro and Kier (2003) and Murphy et al. (2013).")   # Completion message with refs
+          "For information on the Core Consistency Diagnostic (and its limitations), see Bro and Kier (2003) and Murphy et al. (2013).")   # Completion message with refs
   if (any (Core_Consistencies <= 75)){
-    message(" ------ \n","Warning: One or more of the models had a CCD <=75. This could indicate under-fitting of components.") # Warning message if CCD <=75
+    message(" ------ \n","Warning: One or more of the models had a CCD <=75. This could indicate over-fitting of components.") # Warning message if CCD <=75
   }
   return(Core_Consistencies)
 }
