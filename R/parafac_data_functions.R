@@ -230,10 +230,10 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
     group_by(comp) %>%
     mutate(max_pos = which.max(value), max_em = em[max_pos], max_ex = ex[max_pos]) %>%
     mutate(exn = ifelse(em == max_em, ex, NA), emn = ifelse(ex == max_ex, em, NA)) %>%
-    filter(!is.na(emn) | !is.na(exn)) %>%
+    dplyr::filter(!is.na(emn) | !is.na(exn)) %>%
     ungroup() %>%
     mutate_at(vars(ex, em, value, comp), as.numeric) %>%
-    filter(comp == component)
+    dplyr::filter(comp == component)
   comp_spectra
 }
 
