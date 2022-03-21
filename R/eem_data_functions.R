@@ -51,6 +51,39 @@ eem_0_to_NA <- function(eemlist, outputfolder = NULL){
   EEMs_DeNeg <- EEMs_DeNeg  # re-imports eems from the folder they were exported to
 }
 
+#' Generate standard deviations of an eemlist
+#'
+#' @description Produces element-wise sd data for all eems with the supplied eemlist.
+#'
+#' @param eemlist A list of EEMs in a format compliant with eemR/staRdom.
+#' @param mult Numeric; a simple numeric multiplier applied to the resulting matrix.
+#'
+#' @export
+#'
+eemlist_sd <- function(eemlist, mult = 1){
+  cols <- eemlist[[1]]$ex
+  rows <- eemlist[[1]]$em
+  # Coerce eemlist to sd-operable matrices
+  eemlist_matrices <- lapply(eemlist, function(x){
+    eem_df <- as.data.frame(x, gather = FALSE)
+    eem_df <- as.matrix(eem_df)
+  })
+  # Produce standard deviations
+  sd <- apply(simplify2array(eemlist_matrices), 1:2, sd)
+  # Multiplication handling
+  if(mult != 1){
+    if(!is.numeric(mult)){
+      stop("'mult' must be numeric.")
+    } else {
+      sd <- sd * mult
+    }
+  }
+  sd <- data.frame(sd)
+  colnames(sd) <- cols
+  rownames(sd) <- rows
+  sd
+}
+
 #' Set all negative values within a group of EEMs to 0.
 #'
 #' @description Negative fluorescence is not possible, and typically indicates
@@ -162,14 +195,14 @@ eem_range_mod <- function(eemlist, ex_range, em_range){
 #'
 #' @export
 #'
-eem_setNA_mod <- function(eem_list, sample = NULL, em = NULL, ex = NULL, interpolate = FALSE){
+eem_setNA_mod <- function(eemlist, sample = NULL, em = NULL, ex = NULL, interpolate = FALSE){
   if (is.null(sample)) {
-    sample <- eem_names(eem_list)
+    sample <- eem_names(eemlist)
   }
   if (is.numeric(sample)) {
-    sample <- eem_names(eem_list)[sample]
+    sample <- eem_names(eemlist)[sample]
   }
-  eem_list <- lapply(eem_list, function(eem) {
+  eemlist <- lapply(eemlist, function(eem) {
     if (eem$sample %in% sample) {
       if (is.null(ex)){
         ex2 <- 1:ncol(eem$x)
@@ -201,10 +234,10 @@ eem_setNA_mod <- function(eem_list, sample = NULL, em = NULL, ex = NULL, interpo
     eem
   }) %>% `class<-`("eemlist")
   if (interpolate != FALSE) {
-    eem_list[which(eem_names(eem_list) %in% sample)] <- eem_interp(eem_list[which(eem_names(eem_list) %in%
+    eemlist[which(eem_names(eemlist) %in% sample)] <- eem_interp(eemlist[which(eem_names(eemlist) %in%
                                                                                     sample)], type = interpolate) %>% `class<-`("eemlist")
   }
-  eem_list
+  eemlist
 }
 
 #' Normalise EEM data using one of a number of different methods.

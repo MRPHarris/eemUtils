@@ -5,7 +5,7 @@
 \title{Set areas of one or more EEMs to NA.}
 \usage{
 eem_setNA_mod(
-  eem_list,
+  eemlist,
   sample = NULL,
   em = NULL,
   ex = NULL,
@@ -13,6 +13,8 @@ eem_setNA_mod(
 )
 }
 \arguments{
+\item{eemlist}{A list of EEMs in a format compliant with eemR/staRdom.}
+
 \item{sample}{optional, names or indices of samples to process}
 
 \item{em}{optional, emission wavelengths to set NA}
@@ -20,8 +22,6 @@ eem_setNA_mod(
 \item{ex}{optional, excitation wavelengths to set NA}
 
 \item{interpolate}{FALSE, 1 or 2, interpolate NAs or not, 2 different methods.}
-
-\item{eemlist}{A list of EEMs in a format compliant with eemR/staRdom.}
 }
 \description{
 A tweaked/re-built version of staRdom::set_NA(). Sets areas of
