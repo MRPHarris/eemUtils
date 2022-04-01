@@ -1,144 +1,5 @@
 # Functions for the plotting of PARAFAC-related datasets.
 
-#' Plot PARAFAC component modeled EEMs.
-#'
-#' @description Plot the modeled EEMs from one or more PARAFAC models. Takes an
-#'      output from extrpf_spectra_or_eems(type = 1).
-#'
-#' @param modeled_EEMs An output from extrpf_spectra_or_eems(type = 1).
-#' @param contour TRUE/FALSE to display contours on the EEM plot/s.
-#'
-#' @export
-#'
-plot_extrpf_eems <- function(modeled_EEMs, contour = FALSE){
-  tab <- modeled_EEMs
-  colpal <- rainbow(75)[53:1]
-  fill_max <- tab$value %>% max(na.rm = TRUE)
-  vals <- seq(from = 0, to = fill_max, length.out = length(colpal))
-  vals <- (vals - min(vals))/diff(range(vals))
-  colpal <- rainbow(75)[53:1]
-  # Diffs?
-  diffs <- tab %>%
-    select(-value, -comps) %>%
-    gather("spec", "wl", -comp, -modname) %>%
-    group_by(comp, modname, spec) %>%
-    unique() %>%
-    summarise(slits = diff(wl) %>% n_distinct()) %>%
-    .$slits != 1
-  # Plotting
-  plot <- tab %>%
-    ggplot(aes(x = ex, y = em, z = value))
-  # Standard tiles: diffs present
-  if (any(diffs)) {
-    plot <- plot +
-      layer(mapping = aes(colour = value, fill = value),
-            geom = "tile",
-            stat = "identity",
-            position = "identity")
-  }
-  # Rasters: diffs not present
-  else {
-    plot <- plot +
-      layer(mapping = aes(fill = value),
-            geom = "raster",
-            stat = "identity",
-            position = "identity")
-  }
-  plot <- plot +
-    scale_fill_gradientn(colours = colpal,
-                         values = vals,
-                         limits = c(tab$value %>% min(na.rm = TRUE), fill_max),
-                         aesthetics = c("fill", "colour")) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    labs(x = "Excitation (nm)", y = "Emission (nm)") +
-    facet_grid(comp ~ modname)
-  if (isTRUE(contour)) {
-    plot <- plot +
-      geom_contour(colour = "black",size = 0.3)
-  }
-  plot
-}
-
-#' Plot PARAFAC component peak maxima spectra.
-#'
-#' @description Plot the modeled spectra from one or more PARAFAC models. Takes
-#'      an output from extrpf_spectra_or_eems(type = 2).
-#'
-#' @param modeled_spectra An output from extrpf_spectra_or_eems(type = 2).
-#' @param eemlist The list of EEMs used to produce the PARAFAC.
-#' @param title A character vector, to be displayed as a title on the plot.
-#'
-#' @export
-#'
-plot_extrpf_spectra <- function(modeled_spectra, eemlist, title){
-  spectra <- modeled_spectra #shorten input
-  Component_names <- list(
-    'Comp.1'="Component 1",
-    'Comp.2'="Component 2",
-    'Comp.3'="Component 3",
-    'Comp.4'="Component 4",
-    'Comp.5'="Component 5",
-    'Comp.6'="Component 6",
-    'Comp.7'="Component 7",
-    'Comp.8'="Component 8",
-    'Comp.9'="Component 9")
-  Mod_names <- list(
-    'model1'="Model 1",
-    'model2'="Model 2",
-    'model3'="Model 3",
-    'model4'="Model 4",
-    'model5'="Model 5",
-    'model6'="Model 6",
-    'model7'="Model 7",
-    'model8'="Model 8",
-    'model9'="Model 9")
-  compmod_labeller <- function(variable,value){
-    if (variable=='comp') {
-      return(Component_names[value])
-    } else {
-      return(Mod_names[value])
-    }
-  }
-  #num_components_val = 2
-  #ExtendedHotCold = colorRampPalette(brewer.pal(11, "RdYlBu"))  # Optional adaptive ramped palette
-  max_nm <- as.numeric(max(eemlist[[1]]$em, na.rm = TRUE))
-  plot <- ggplot() # init ggplot object
-  plot_exp <- plot +
-    geom_line(data = spectra, aes(x = exn, y = value), colour = "#000000", group = "excitation", na.rm = TRUE) + # line for first component
-    geom_area(data = spectra ,aes(x = exn, y = value, fill = "excitation"), alpha = 0.5, group = "excitation") + # area fill for first component
-    geom_line(data = spectra, aes(x = emn, y = value), colour = "#000000", group = "emission", na.rm = TRUE) + # line for second component
-    geom_area(data = spectra, aes(x = emn, y = value, fill = "emission"), alpha = 0.5, group = "emission") +
-    labs(
-      title = title,
-      x = "Wavelength (nm)",
-      y = "Loading") +
-    scale_fill_manual(
-      values = c("darkblue","steelblue"), # CHANGE FILL COLOURS HERE
-      #values = ExtendedHotCold(num_components_val),
-      name = "Component Spectra") +
-    scale_x_continuous(
-      expand = c(0,0),
-      limits = c(235,max_nm),
-      breaks = seq(250,max_nm,50),
-      position = "bottom") +
-    scale_y_continuous(
-      expand = c(0,0)) +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1),
-      axis.line = element_line(),
-      plot.title = element_text(hjust = 0.5),
-      legend.title = element_text(size=10, face = "bold"),
-      legend.position = c(0.8,0.4),
-      legend.background = element_rect(fill = "white", size = 0.5, linetype = "solid", colour = "white"),
-      panel.background = element_rect(fill = NA, color = "#d4d4d6"),
-      panel.grid.major.x = element_line(size = 0.3, linetype = 'dashed', colour = '#d4d4d6')) +
-    facet_grid(
-      comp ~ modname,
-      labeller = compmod_labeller)
-  plot_exp <<- plot_exp
-  print(plot_exp)
-}
-
 #' Plot the component spectra intersecting at component maxima from a list of PARAFAC models.
 #'
 #' @description This is an unpacked staRdom::eempf_plot_comps(type = 2).
@@ -218,40 +79,6 @@ plot_pfmodels_spectra <- function (pfmodel_list, eemlist, title){
       comp ~ modname)
 }
 
-#' Plot PARAFAC component modeled EEM in 3D, with a reversed excitation axis.
-#'
-#' @description A tweaked staRdom::eempf_comps3D() function that accounts for
-#'      the excitation axis being incorrectly plotted in the original. Seems to
-#'      be a common feature for Aqualog .DAT or .csv originating data. Not quite
-#'      sure where the flipped axis enters the equation!
-#'
-#' @param pfmodel A PARAFAC model object.
-#' @param which NULL or numeric for which component from the PARAFAC model to plot.
-#'
-#' @export
-#'
-eempf_comps3D_revex <- function (pfmodel, which = NULL){
-  data <- pfmodel %>% eempf_comp_mat()
-  z <- lapply(data, function(mat) {
-    mat %>% data.frame() %>% spread(em, value) %>% remove_rownames() %>%
-      column_to_rownames("ex") %>% as.matrix()
-  })
-  ex <- lapply(data, function(mat) {
-    mat$ex %>% rev() %>% unique() %>% as.numeric() %>% as.vector()
-  })
-  em <- lapply(data, function(mat) {
-    mat$em %>% unique() %>% as.numeric() %>% as.vector()
-  })
-  scene <- list(xaxis = list(title = "em"), yaxis = list(title = "ex"))
-  lapply(1:length(ex), function(comp) {
-    if (is.null(which) | comp %in% which) {
-      plotly::plot_ly(x = em[[comp]], y = ex[[comp]], z = z[[comp]],
-                      colors = rainbow(12)[9:1]) %>% plotly::layout(scene = scene) %>%
-        plotly::add_surface()
-    }
-  })
-}
-
 #' Plot PARAFAC model loadings versus per-sample Fmax at the component peak position.
 #'
 #' @description A simple scatter plot of PARAFAC component loadings versus Fmax data. Optional labelling,
@@ -311,4 +138,41 @@ fmax_peakpick_corrplot <- function(pfmodel, eemlist, component = 1, denorm = TRU
   plt
 }
 
+#' Plot PARAFAC model Ex and Em mode (B and C) loadings
+#'
+#' @description Basic lineplot of Ex and Em spectra extracted from PARAFAC model components.
+#'
+#' @param pfmodel A PARAFAC model object.
+#' @param eemlist An eemlist object.
+#' @param component Integer. Which PARAFAC component to plot?
+#' @param denorm TRUE/FALSE denormalise the loadings based upon eemlist (not parafac) fmax values?
+#' @param labels TRUE/FALSE extract numeric values from sample names and use these as labels. values/10 by default to match a lexicographic scheme.
+#' @param label_threshold Integer. Values lying above this number multiplied by the mean will be given labels via geom_text
+#'
+#' @export
+#'
+plot_comp_spectra <- function(pfmodel, comp){
+  em_spec <- pfmodel$B %>%
+    data.frame() %>%
+    select(all_of(paste0('Comp.',comp))) %>%
+    rownames_to_column('wavelength') %>%
+    mutate(name = 'em') %>%
+    rename_with(.cols = 2, ~"value") %>%
+    mutate_at(vars(wavelength, value), as.numeric) %>%
+    mutate(value = (value/max(value)))
+  ex_spec <- pfmodel$C %>%
+    data.frame() %>%
+    select(all_of(paste0('Comp.',comp))) %>%
+    rownames_to_column('wavelength') %>%
+    mutate(name = 'ex') %>%
+    rename_with(.cols = 2, ~"value") %>%
+    mutate_at(vars(wavelength, value), as.numeric) %>%
+    mutate(value = (value/max(value)))
+  spec <- rbind(em_spec,ex_spec)
+  p <- ggplot() +
+    geom_line(data = spec, aes(x = wavelength, y = value, group = name)) +
+    scale_x_continuous(expand = c(0,0)) +
+    theme_cowplot(12)
+  p
+}
 

@@ -146,6 +146,7 @@ extract_procstep_eems <- function(list_of_eemlists, which_eem = 1, output_dir = 
 #'
 #' @import ggplot2 tidyr eemR
 #' @importFrom grDevices rainbow
+#' @importFrom plyr round_any
 #'
 #' @export
 #'
@@ -296,6 +297,8 @@ ggeem2.data.frame <- function(data,
       summarise(slits = diff(wl) %>% n_distinct()) %>%
       .$slits != 1
     # Plotting
+    max_em_bound <- round_any(max(table$em), 100)
+    min_em_bound <- round_any(min(table$em), 100, f = ceiling)
     plot <- table %>%
       ggplot(aes(x = ex, y = em, z = value))+
       labs(x = "Excitation (nm)", y = "Emission (nm)")
@@ -338,13 +341,13 @@ ggeem2.data.frame <- function(data,
           scale_colour_stepsn(colours = colpal, breaks = vals_shift,labels = vals_labels, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
                               na.value="white") +
           scale_x_continuous(expand = c(0,0)) +
-          scale_y_continuous(expand = c(0,0))
+          scale_y_continuous(expand = c(0,0), breaks = seq(min_em_bound,max_em_bound,100))
       } else {
         plot <- plot +
           scale_fill_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white")+
           scale_colour_stepsn(colours = colpal, limits = c(0,fill_max), na.value="white") +
           scale_x_continuous(expand = c(0,0))+#, limits = c(min(eem$ex))) +
-          scale_y_continuous(expand = c(0,0))#, limits = c(min(eem$em)))
+          scale_y_continuous(expand = c(0,0), breaks = seq(min_em_bound,max_em_bound,100))#, limits = c(min(eem$em)))
       }
     } else {
       # Not binned - continuous scale.
@@ -357,13 +360,13 @@ ggeem2.data.frame <- function(data,
           scale_colour_gradientn(colours = colpal, values = vals, limits = c(table$value %>% min(na.rm=TRUE),fill_max),
                                  na.value="white") +
           scale_x_continuous(expand = c(0,0)) +
-          scale_y_continuous(expand = c(0,0))
+          scale_y_continuous(expand = c(0,0), breaks = seq(min_em_bound,max_em_bound,100))
       } else {
         plot <- plot +
           scale_fill_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white")+
           scale_colour_gradientn(colours = colpal, limits = c(0,fill_max), na.value="white") +
           scale_x_continuous(expand = c(0,0)) +
-          scale_y_continuous(expand = c(0,0))
+          scale_y_continuous(expand = c(0,0), breaks = seq(min_em_bound,max_em_bound,100))
       }
     }
     # Title handling.
