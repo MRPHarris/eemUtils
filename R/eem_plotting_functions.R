@@ -250,7 +250,9 @@ ggeem2.data.frame <- function(data,
   } else if(!is.vector(colpal)) {
     stop("Please provide a vector of colours, or use the defaults!")
   }
-
+  if(is.null(textsize_multiplier)){
+    textsize_multiplier = 1
+  }
   ### Single vs multiple EEM handling.
   if(n_eems == 0){
     stop("n_eems set to 0. Please provide a number of eems")
@@ -520,10 +522,12 @@ ggeem2.data.frame <- function(data,
         panel.background = element_rect(fill = 'white', colour = 'black'),
         strip.background = element_blank(),
         strip.text = element_blank(),
-        axis.text = element_text(size = 9*textsize_multiplier),
+        axis.text = element_text(size = 9*textsize_multiplier,
+                                 colour = 'black'),
         axis.title = element_text(size = 10*textsize_multiplier),
         legend.text = element_text(size = 9*textsize_multiplier),
-        legend.title = element_text(size = 10*textsize_multiplier)
+        legend.title = element_text(size = 10*textsize_multiplier),
+        axis.ticks = element_line(colour = 'black')
       )
     #plot  <- plot +
     #  annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
