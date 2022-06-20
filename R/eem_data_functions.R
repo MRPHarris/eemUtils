@@ -256,7 +256,7 @@ eem_setNA_mod <- function(eemlist, sample = NULL, em = NULL, ex = NULL, interpol
 #'
 #' @export
 #'
-normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, norm_data, norm_value = NULL,
+normalise_eemlist <- function(eemlist, type = 'max_eem_val', norm_log, norm_data, norm_value = NULL,
                               outputfolder = NULL, append_name = NULL){
   # Available types:
   # - raman_peak_to_area: denormalise by area of the RamanPeak, renormalise by the peak area. Most must be supplied.
@@ -384,6 +384,7 @@ normalise_eemlist <- function(eemlist, type = 'raman_peak_to_area', norm_log, no
   }
   # Output checks
   normalised_eemlist <- plyr::compact(normalised_eemlist)
+  class(normalised_eemlist) <- 'eemlist'
   # Exporting, if a directory is specified.
   if(!is.null(outputfolder)){
     message("Exporting EEMs to output folder")

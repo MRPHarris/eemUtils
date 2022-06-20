@@ -6,7 +6,7 @@
 \usage{
 normalise_eemlist(
   eemlist,
-  type = "raman_peak_to_area",
+  type = "max_eem_val",
   norm_log,
   norm_data,
   norm_value = NULL,
