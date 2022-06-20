@@ -24,7 +24,7 @@ ggplot_textsize_scale <- function(plot,
                                   default_legend_text_size = 9){
   plot <- plot +
     theme(plot.title = element_text(size = default_title_size * multiplier),
-          axis.text = element_text(size = default_axis_text_size9 * multiplier),
+          axis.text = element_text(size = default_axis_text_size * multiplier),
           axis.title = element_text(size = default_axis_title_size * multiplier),
           legend.text = element_text(size = default_legend_text_size * multiplier),
           legend.title = element_text(size = default_legend_title_size * multiplier))
