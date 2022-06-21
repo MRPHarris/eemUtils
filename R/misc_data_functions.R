@@ -1,6 +1,81 @@
 # Various miscellaneous functions for eem or fluorometer datasets.
 # Here are all the functions that didn't fit in elsewhere.
 
+#' An importer for Aqualog-produced 2D emission scans
+#'
+#' @description A simple importing function for 2D emission scans produced using the
+#'      HORIBA Aqualog. Supports both sample and blank scan types (though not both at the same time)
+#'
+#' @param files character vector containing one or more full filenames of emission scans
+#' @param type character - one of either 'sample' or 'blank'
+#'
+#' @export
+#'
+emscan_read <- function(files, type = 'sample'){
+  # input checks
+  if(!(type == 'sample') && !(type == 'blank')){
+    stop("Please supply param 'type' as either 'blank' or 'sample'.")
+  }
+  # coerce to list
+  if(!is.list(files)){
+    files <- as.list(files)
+  }
+  # sample em scans
+  if(type == 'sample'){
+    emscans <- lapply(files, function(f){
+      # name handling
+      fname <- unlist(lapply(str_split(f,"[/]"),tail,n = 1L))
+      # types = sample, blank
+      data <- readLines(f)
+      dat <- stringr::str_extract_all(data, "-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?")
+      # pull out head values
+      headline <- str_split(data[1],"[\t]")
+      head_values <- unlist(dat[4])[3:5]
+      emscan <- vector('list',length = 7)
+      names(emscan) <- c("name","type","wavelength","emission","scan_ex","Abs","%T")
+      emscan[['name']] <- fname
+      emscan[['type']] <- 'sample'
+      emscan[['scan_ex']] <- as.numeric(head_values[1])
+      emscan[['Abs']] <- as.numeric(head_values[2])
+      emscan[['%T']] <- as.numeric(head_values[3])
+      # wl, em
+      emscan[['wavelength']] <- as.numeric(unlist(lapply(dat[4:length(dat)],"[[",1)))
+      emscan[['emission']] <- as.numeric(unlist(lapply(dat[4:length(dat)],"[[",2)))
+      # export
+      emscan
+    })
+  } else if(type == 'blank'){
+    emscans <- lapply(files, function(f){
+      # name handling
+      fname <- unlist(lapply(str_split(f,"[/]"),tail,n = 1L))
+      # type = blank
+      data <- readLines(f)
+      dat <- stringr::str_extract_all(data, "-?\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?")
+      # pull out head values
+      headline <- unlist(str_split(data[1],"[\t]"))
+      headline2 <- unlist(str_split(data[3],"[\t]"))
+      headline_combined <- c(headline[1],headline2[2],headline2[3],headline[4],headline[5],
+                             'scan_ex',headline2[7],headline2[8],headline[9],headline[10],
+                             headline2[11],headline[12],headline2[13],'corrected emission')
+      emscan <- as.list(as.numeric(unlist(dat[4])))
+      names(emscan) <- headline_combined
+      emscan[[1]] <- as.numeric(unlist(lapply(dat[4:length(dat)],"[[",1)))
+      emscan[[2]] <- as.numeric(unlist(lapply(dat[4:length(dat)],"[[",2)))
+      emscan[[3]] <- as.numeric(unlist(lapply(dat[4:length(dat)],"[[",3)))
+      emscan[[9]] <- c(as.numeric(unlist(lapply(dat[4],"[[",9))),
+                       as.numeric(unlist(lapply(dat[5:length(dat)],"[[",4))))
+      emscan[[11]] <- c(as.numeric(unlist(lapply(dat[4],"[[",11))),
+                        as.numeric(unlist(lapply(dat[5:length(dat)],"[[",5))))
+      emscan[[14]] <- c(as.numeric(unlist(lapply(dat[4],"[[",14))),
+                        as.numeric(unlist(lapply(dat[5:length(dat)],"[[",6))))
+      # export
+      emscan
+    })
+  }
+  return(emscans)
+}
+
+
 #' Work in progress function to bin or interpolate series data at a monthly resolution.
 #'
 #' @description Bin or interpolate data to a monthly scale and output in a dataframe
