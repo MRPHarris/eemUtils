@@ -12,19 +12,20 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-  staRdom,
-  eemR,
-  EEM,
-  ggplot2,
-  ggpmisc,
-  plotly,
-  cowplot,
-  tidyverse,
-  magrittr,
-  pracma,
-  magick,
-  data.table,
-  dplyr
+    staRdom,
+    eemR,
+    EEM,
+    ggplot2,
+    ggpmisc,
+    plotly,
+    cowplot,
+    tidyverse,
+    magrittr,
+    pracma,
+    magick,
+    data.table,
+    dplyr,
+    forecast
 Depends: 
   R (>= 3.1)
 RoxygenNote: 7.1.1
