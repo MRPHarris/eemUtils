@@ -9,8 +9,8 @@ eemlist_sd(eemlist, mult = 1)
 \arguments{
 \item{eemlist}{A list of EEMs in a format compliant with eemR/staRdom.}
 
-\item{mult}{Numeric; a simple numeric multiplier applied to the resulting matrix.}
+\item{mult}{Numeric; a simple numeric multiplier applied to the resulting ex-em pair sd values.}
 }
 \description{
-Produces element-wise sd data for all eems with the supplied eemlist.
+Produces an EEM object containing ex/em-pair standard deviations for all eems within the supplied eemlist.
 }
