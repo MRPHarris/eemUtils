@@ -37,7 +37,7 @@ emscan_read <- function (files, type = "sample"){
       emscan[["type"]] <- "sample"
       emscan
     })
-  }
+  } # Adding a note
   else if (type == "blank") {
     emscans <- lapply(files, function(f) {
       fname <- unlist(lapply(str_split(f, "[/]"),
@@ -75,7 +75,6 @@ emscan_read <- function (files, type = "sample"){
   }
   return(emscans)
 }
-
 
 #' Work in progress function to bin or interpolate series data at a monthly resolution.
 #'
