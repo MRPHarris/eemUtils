@@ -11,7 +11,7 @@ extrpf_loadings_percent(pfmodel, eemlist, denormalise = FALSE)
 
 \item{eemlist}{supply the eemlist used for denormalisation. Only necessary if denormalise is set to TRUE.}
 
-\item{denormalise}{TRUE/FALSE to denormalise the loadings prior to the % calculation\}
+\item{denormalise}{TRUE/FALSE to denormalise the loadings prior to the percent calculation}
 }
 \description{
 Return the percent contribution of each component to the modelled fluorescence response of each sample, using
