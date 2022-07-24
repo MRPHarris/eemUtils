@@ -75,9 +75,10 @@ save_eemlist_pngs <- function(eemlist, contour = FALSE, output_dir = NULL){
     print(EEM_Name)
     message(paste0("EEM ",i,"/",length(eemlist)))
     Target_eemlist <- vector("list", 1)
+    class(Target_eemlist) <- "eemlist"
     Target_eemlist[[1]] <- eemlist[[i]]
     png(paste0(output_dir,EEM_Name,".png"), units="cm", width=18, height=14, res=300)
-    print(eem_overview_plot(Target_eemlist, contour = cyn)) # change here to output contours in .png EEMs
+    print(ggeem2(Target_eemlist, contour = contour)) # change here to output contours in .png EEMs
     dev.off()
   }
 }
