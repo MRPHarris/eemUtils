@@ -2,7 +2,7 @@
 % Please edit documentation in R/parafac_data_functions.R
 \name{extrpf_loadings_percent}
 \alias{extrpf_loadings_percent}
-\title{Extract the per-EEM % contributions of each component}
+\title{Extract the per-EEM percentage contributions of each component}
 \usage{
 extrpf_loadings_percent(pfmodel, eemlist, denormalise = FALSE)
 }
