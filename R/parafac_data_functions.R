@@ -65,7 +65,7 @@ extrpf_loadings <- function(pfmodel, by_index = FALSE, fill_stat = FALSE){
   # data.table::setDT(Loadings, keep.rownames = TRUE)[]
   Loadings <- Loadings %>%
     rownames_to_column("sample") %>%
-    select(sample, everything())
+    dplyr::select(sample, everything())
   colnames(Loadings)[1] <- c("sample")
   if (isTRUE(by_index)) {
     index <- as.numeric(regmatches(Loadings$sample,gregexpr("[[:digit:]]+", Loadings$sample)))
@@ -143,7 +143,7 @@ extrpf_peak_positions <- function(pfmodel, component = 1){
   peak_spectra = extrpf_peak_spectra(pfmodel = pfmodel,
                                      component = component)
   peakpositions = peak_spectra %>%
-    dplyr::select(max_ex,max_em) %>%
+    dplyr::dplyr::select(max_ex,max_em) %>%
     distinct()
   peakpositions
 }
@@ -221,7 +221,7 @@ extrpf_fmax <- function(pfmodel, eemlist, component = NULL, type = "fmax", denor
   }
   fmax_frame$sample <- unlist(lapply(eemlist,"[[",'sample'))
   fmax_frame <- fmax_frame %>%
-    select("sample", everything())
+    dplyr::select("sample", everything())
   # By type.
   if(type == "fmax"){
     # denormalise, if need be
@@ -306,7 +306,7 @@ extrpf_loadings_percent <- function(pfmodel, eemlist, denormalise = FALSE){
     mutate_all(.,function(col){(col/FI_totals)*100})
   pct_contrib$sample <- loadings$sample
   pct_contrib <- pct_contrib %>%
-    select('sample',everything())
+    dplyr::select('sample',everything())
   pct_contrib
 }
 
