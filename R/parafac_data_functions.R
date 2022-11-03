@@ -143,7 +143,7 @@ extrpf_peak_positions <- function(pfmodel, component = 1){
   peak_spectra = extrpf_peak_spectra(pfmodel = pfmodel,
                                      component = component)
   peakpositions = peak_spectra %>%
-    dplyr::dplyr::select(max_ex,max_em) %>%
+    dplyr::select(max_ex,max_em) %>%
     distinct()
   peakpositions
 }
