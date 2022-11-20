@@ -512,7 +512,7 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
   #n_pp = 2
   #direction = "ex"
   if(class(eem) == 'eemlist'){
-    eem2 <- lapply(eem, function(e){interpolate_eem}) %>% 'class<-'(c('eemlist'))
+    eem2 <- lapply(eem, function(e){interpolate_eem(e)}) %>% 'class<-'(c('eemlist'))
     return(eem2)
   } else if(class(eem) == 'eem'){
     eem_df_ug <- as.data.frame(eem, gather = FALSE)
