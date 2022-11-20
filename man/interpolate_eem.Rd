@@ -7,7 +7,7 @@
 interpolate_eem(eem, n_pp = 2, direction = "ex", verbose = FALSE)
 }
 \arguments{
-\item{eem}{An eem object compliant with the staRdom/eemR framework.}
+\item{eem}{An eem or eemlist object compliant with the staRdom/eemR framework.}
 
 \item{n_pp}{numeric; how many data points to add between existing ones?}
 
