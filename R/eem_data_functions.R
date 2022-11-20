@@ -512,7 +512,7 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
   #n_pp = 2
   #direction = "ex"
   if(class(eem) == 'eemlist'){
-    eem2 <- lapply(eem, function(e){interpolate_eem})
+    eem2 <- lapply(eem, function(e){interpolate_eem}) %>% 'class<-'(c('eemlist'))
     return(eem2)
   } else if(class(eem) == 'eem'){
     eem_df_ug <- as.data.frame(eem, gather = FALSE)
@@ -632,7 +632,8 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
     eem_extrap <- eemdf_to_eem(eemdf = eem_df_ug_tofill,
                                file = eem$file,
                                sample = eem$sample,
-                               location = eem$location)
+                               location = eem$location) %>%
+      'class<-'(c('eem'))
     return(eem_extrap)
   } else if(!is(eem,"eem")){
     stop("Please provide an object of class 'eem'")
