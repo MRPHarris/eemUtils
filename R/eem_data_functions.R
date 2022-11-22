@@ -23,7 +23,7 @@
 #' @importFrom tidyr gather
 #' @importFrom dplyr bind_rows
 #'
-#' @noRd
+#' @export
 #'
 extrpf_residuals <- function(pfmodel, eem_list, select = NULL, cores = parallel::detectCores(logical = FALSE)-1,
                                  denormalise = FALSE, extend_eemlist = TRUE, verbose = FALSE, force_names = TRUE){
