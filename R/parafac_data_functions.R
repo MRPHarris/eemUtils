@@ -255,6 +255,7 @@ extrpf_eems <- function(pfmodel){
     m_eem
   })
   names(eemlist) <- colnames(pfmodel$B)
+  eemlist <- eemlist %>% 'class<-'(c('eemlist'))
   eemlist
 }
 
