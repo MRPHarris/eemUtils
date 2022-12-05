@@ -178,13 +178,7 @@ knmi_monthly_rescale <- function(data,
   }
   knmi_frame <- data.frame(matrix(NA, nrow = length(years_unique),
                                   ncol = n_month_groups + 1))
-  if(n_month_groups == 12){
-    months <- c("", "Jan", "Feb", "Mar",
-                "Apr", "May", "Jun", "Jul", "Aug",
-                "Sep", "Oct", "Nov", "Dec")
-  } else {
-    months <- c("",seq(1,n_month_groups,1))
-  }
+  months <- c("",seq(1,n_month_groups,1))
   colnames(knmi_frame) <- months
   knmi_frame[1:length(years_unique), 1] <- years_unique
   it_list <- vector(mode = "list", length = length(years_unique))
@@ -272,11 +266,21 @@ knmi_monthly_rescale <- function(data,
     if(average_type == "impersonate_monthly"){
       knmi_frame_avs <- knmi_frame_avs %>%
         rownames_to_column(" ")
+      if(n_month_groups == 12){
+        months <- c("", "Jan", "Feb", "Mar",
+                    "Apr", "May", "Jun", "Jul", "Aug",
+                    "Sep", "Oct", "Nov", "Dec")
+      }
       return(knmi_frame_avs)
     } else if(average_type == "annual_averages")
       return(ann_avs)
   } else {
     # Don't undertake any annual average shenanigans
+    if(n_month_groups == 12){
+      months <- c("", "Jan", "Feb", "Mar",
+                  "Apr", "May", "Jun", "Jul", "Aug",
+                  "Sep", "Oct", "Nov", "Dec")
+    }
     return(knmi_frame)
   }
 }
