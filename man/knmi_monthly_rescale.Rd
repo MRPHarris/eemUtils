@@ -11,7 +11,10 @@ knmi_monthly_rescale(
   n_month_groups = 12,
   method = "bin",
   new_timescale_centered = FALSE,
-  replace_NA = TRUE
+  replace_NA = TRUE,
+  annual_average_startmonth = NULL,
+  average_type = "annual_averages",
+  align_monthly_impersonation = FALSE
 )
 }
 \arguments{
@@ -28,6 +31,12 @@ knmi_monthly_rescale(
 \item{new_timescale_centered}{TRUE/FALSE if binning, will the bins be centered?}
 
 \item{replace_NA}{TRUE/FALSE to replace instances of NA with -999.9, which is KNMI's default missing value handle.}
+
+\item{annual_average_startmonth}{NULL or numeric between 1 and 12. If set to a number between 1 and 12, an annual average will be calculated starting at that month. Currently Jan to June will (1 to 6) will commence the average in the current year, and July to Dec in the preceding year.}
+
+\item{average_type}{one of either "annual_averages" or "impersonate_monthly".. The former will return the average values in data frame, and the latter will impersonate a format that KNMI will accept as a monthly resolution data to allow comparison of the annual averages against monthly-resolved data.}
+
+\item{align_monthly_impersonation}{TRUE/FALSE. If returning an impersonate_monthly data frame (see previous param), should the annual values start in January for a given year, or commence at the annual_average_startmonth?}
 }
 \description{
 Bin or interpolate data to a monthly scale and output in a dataframe
