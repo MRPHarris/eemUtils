@@ -209,7 +209,8 @@ knmi_monthly_rescale <- function(data,
   if(!is.null(annual_average_startmonth)){
     # Computing annual averages
     knmi_frame_rev <- knmi_frame %>%
-      column_to_rownames(var = 1)
+      'colnames<-'(c("year",colnames(knmi_frame)[2:ncol(knmi_frame)])) %>%
+      column_to_rownames(var = "year")
     if(average_type == "impersonate_monthly"){
       knmi_frame_avs <- data.frame(matrix(NA,nrow = nrow(knmi_frame_rev), ncol = ncol(knmi_frame_rev))) %>%
         'colnames<-'(colnames(knmi_frame_rev)) %>%
