@@ -197,9 +197,9 @@ knmi_monthly_rescale <- function(data,
                                            1)):ncol(knmi_frame)] <- rows_it
     }
   }
-  if (isTRUE(replace_NA)) {
-    knmi_frame[is.na(knmi_frame)] <- -999.9
-  }
+  # if (isTRUE(replace_NA)) {
+  #   knmi_frame[is.na(knmi_frame)] <- -999.9
+  # }
   if(!is.null(annual_average_startmonth)){
     # Computing annual averages
     knmi_frame_rev <- knmi_frame %>%
@@ -283,6 +283,10 @@ knmi_monthly_rescale <- function(data,
       months <- c("", "Jan", "Feb", "Mar",
                   "Apr", "May", "Jun", "Jul", "Aug",
                   "Sep", "Oct", "Nov", "Dec")
+    }
+    colnames(knmi_frame) <- months
+    if (isTRUE(replace_NA)) {
+      knmi_frame[is.na(knmi_frame)] <- -999.9
     }
     return(knmi_frame)
   }
