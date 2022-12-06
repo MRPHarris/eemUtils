@@ -275,8 +275,9 @@ knmi_monthly_rescale <- function(data,
         knmi_frame_avs[is.na(knmi_frame_avs)] <- -999.9
       }
       return(knmi_frame_avs)
-    } else if(average_type == "annual_averages")
+    } else if(average_type == "annual_averages"){
       return(ann_avs)
+    }
   } else {
     # Don't undertake any annual average shenanigans
     if(n_month_groups == 12){
