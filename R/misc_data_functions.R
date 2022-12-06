@@ -271,6 +271,9 @@ knmi_monthly_rescale <- function(data,
                     "Apr", "May", "Jun", "Jul", "Aug",
                     "Sep", "Oct", "Nov", "Dec")
       }
+      if (isTRUE(replace_NA)) {
+        knmi_frame_avs[is.na(knmi_frame_avs)] <- -999.9
+      }
       return(knmi_frame_avs)
     } else if(average_type == "annual_averages")
       return(ann_avs)
