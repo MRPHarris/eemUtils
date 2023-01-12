@@ -235,15 +235,15 @@ knmi_monthly_rescale <- function(data,
       }
       type = average_alignment
     }
-    if(annual_average_startmonth > 12){
-      stop("There are only 12 months in a year. annual_average_startmonth must be between or equal to 1 and 12.")
-    } else if(annual_average_startmonth <= 6){
-      type = 'current'
-      message("Annual average will start in the current calendar year.")
-    } else if(annual_average_startmonth >= 7){
-      type = 'previous'
-      message("Annual average will start in the preceding calendar year.")
-    }
+    # if(annual_average_startmonth > 12){
+    #   stop("There are only 12 months in a year. annual_average_startmonth must be between or equal to 1 and 12.")
+    # } else if(annual_average_startmonth <= 6){
+    #   type = 'current'
+    #   message("Annual average will start in the current calendar year.")
+    # } else if(annual_average_startmonth >= 7){
+    #   type = 'previous'
+    #   message("Annual average will start in the preceding calendar year.")
+    # }
     smonth_column <- as.numeric(which(as.numeric(colnames(knmi_frame_rev)) == annual_average_startmonth))
     for(y in seq_along(it_list)){
       # Determine position of starting month in previous year
