@@ -265,7 +265,11 @@ knmi_monthly_rescale <- function(data,
         }
       } else if(type == 'current'){
         current_row_vals <- as.numeric(knmi_frame_rev[year_row,])[seq(smonth_column,ncol(knmi_frame_rev),1)]
-        following_row_vals <- as.numeric(knmi_frame_rev[year_row + 1,])[seq(1,smonth_column-1,1)]
+        if(smonth_column == 1){
+          following_row_vals <- c()
+        } else {
+          following_row_vals <- as.numeric(knmi_frame_rev[year_row + 1,])[seq(1,smonth_column-1,1)]
+        }
         vals <- c(current_row_vals,following_row_vals)
         ann_avs$value[year_row] = mean(vals, na.rm = T)
         ann_avs$count[year_row] = sum(!is.na(vals))
