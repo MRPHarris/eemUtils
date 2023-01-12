@@ -90,8 +90,9 @@ emscan_read <- function (files, type = "sample"){
 #' @param method 'bin' or 'interpolate' - how will the rescaling be performed? Binning is usually better.
 #' @param new_timescale_centered TRUE/FALSE if binning, will the bins be centered?
 #' @param replace_NA TRUE/FALSE to replace instances of NA with -999.9, which is KNMI's default missing value handle.
-#' @param annual_average_startmonth NULL or numeric between 1 and 12. If set to a number between 1 and 12, an annual average will be calculated starting at that month. Currently Jan to June will (1 to 6) will commence the average in the current year, and July to Dec in the preceding year.
+#' @param annual_average_startmonth NULL or numeric between 1 and 12. If set to a number between 1 and 12, an annual average will be calculated starting at that month.
 #' @param average_type one of either "annual_averages" or "impersonate_monthly".. The former will return the average values in data frame, and the latter will impersonate a format that KNMI will accept as a monthly resolution data to allow comparison of the annual averages against monthly-resolved data.
+#' @param average_alignment NULL or one of either "current" or "previous". NULL means that Jan to June will (months 1 to 6) will commence the average in the current year, and July to Dec in the preceding year.
 #' @param align_monthly_impersonation TRUE/FALSE. If returning an impersonate_monthly data frame (see previous param), should the annual values start in January for a given year, or commence at the annual_average_startmonth?
 #'
 #' @export
@@ -104,7 +105,8 @@ knmi_monthly_rescale <- function(data,
                                  new_timescale_centered = FALSE,
                                  replace_NA = TRUE,
                                  annual_average_startmonth = NULL,
-                                 average_type = "annual_averages",
+                                 average_type = "impersonate_monthly",
+                                 average_alignment = NULL,
                                  align_monthly_impersonation = FALSE){
   if (method == "bin") {
     message("Method: Binning")
@@ -218,8 +220,21 @@ knmi_monthly_rescale <- function(data,
     # how many years?
     n_years <- nrow(knmi_frame_rev)
     it_list <- vector('list', length = n_years)
-
-    # In this implementation, I assume that the year the value is associate with is the one containing the majority of months used in the average
+    # monthly alignment added. Default behaviour by setting 'average_alignment' to NULL.
+    if(is.null(average_alignment)){
+      if(annual_average_startmonth <= 6){
+        type = 'current'
+        message("Annual average will start in the current calendar year.")
+      } else if(annual_average_startmonth >= 7){
+        type = 'previous'
+        message("Annual average will start in the preceding calendar year.")
+      }
+    } else if(!is.null(average_alignment)){
+      if(average_alignment != "current" && average_alignment != "previous"){
+        stop("average alignment must be one of NULL, 'current' or 'previous'.")
+      }
+      type = average_alignment
+    }
     if(annual_average_startmonth > 12){
       stop("There are only 12 months in a year. annual_average_startmonth must be between or equal to 1 and 12.")
     } else if(annual_average_startmonth <= 6){
