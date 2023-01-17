@@ -7,7 +7,9 @@
 extrpf_peak_positions(pfmodel, component = 1)
 }
 \arguments{
-\item{modeled_spectra}{PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2)}
+\item{pfmodel}{A PARAFAC model object.}
+
+\item{component}{NULL for all components, or the numeric identifier of a single component.}
 }
 \description{
 Uses extrpf_peak_spectra to obtain the single ex/em coordinate pair for the maxima of the

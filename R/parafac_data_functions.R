@@ -264,7 +264,8 @@ extrpf_eems <- function(pfmodel){
 #' @description Uses extrpf_peak_spectra to obtain the single ex/em coordinate pair for the maxima of the
 #'     specified PARAFAC component.
 #'
-#' @param modeled_spectra PARAFAC-modeled spectra. An output from extrpf_spectra_or_eems(type = 2)
+#' @param pfmodel A PARAFAC model object.
+#' @param component NULL for all components, or the numeric identifier of a single component.
 #'
 #' @export
 #'
@@ -279,10 +280,10 @@ extrpf_peak_positions <- function(pfmodel, component = 1){
 
 #' Extract spectra at the peak wavelength position.
 #'
-#' @description An alternative to the extrpf_peaks_or_eems. Simply extract the spectra at the peak for a given component.
+#' @description Extract the spectra at the peak for a given component.
 #'
-#' @param pfmodel A PARAFAC model object a la staRdom
-#' @param component Extract spectra for this component. Numeric
+#' @param pfmodel A PARAFAC model object
+#' @param component NULL or numeric for specific components.
 #'
 #' @export
 #'
@@ -310,8 +311,12 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
     mutate(exn = ifelse(em == max_em, ex, NA), emn = ifelse(ex == max_ex, em, NA)) %>%
     dplyr::filter(!is.na(emn) | !is.na(exn)) %>%
     ungroup() %>%
-    mutate_at(vars(ex, em, value, comp), as.numeric) %>%
+    mutate_at(vars(ex, em, value, comp), as.numeric)# %>%
+    # dplyr::filter(comp == component)
+  if(is.null(component)){
+    comp_spectra %>%
     dplyr::filter(comp == component)
+  }
   comp_spectra
 }
 

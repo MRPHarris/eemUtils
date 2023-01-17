@@ -7,10 +7,10 @@
 extrpf_peak_spectra(pfmodel, component = 1)
 }
 \arguments{
-\item{pfmodel}{A PARAFAC model object a la staRdom}
+\item{pfmodel}{A PARAFAC model object}
 
-\item{component}{Extract spectra for this component. Numeric}
+\item{component}{NULL or numeric for specific components.}
 }
 \description{
-An alternative to the extrpf_peaks_or_eems. Simply extract the spectra at the peak for a given component.
+Extract the spectra at the peak for a given component.
 }
