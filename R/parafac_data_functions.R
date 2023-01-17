@@ -317,7 +317,7 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
     mutate_at(vars(ex, em, value, comp), as.numeric)# %>%
     # dplyr::filter(comp == component)
   if(!is.null(component)){
-    comp_spectra %>%
+    comp_spectra <- comp_spectra %>%
       dplyr::filter(comp == component)
   }
   comp_spectra
