@@ -270,7 +270,7 @@ extrpf_eems <- function(pfmodel){
 #' @export
 #'
 extrpf_peak_positions <- function(pfmodel, component = NULL){
-  if(is.null(component) || is.numeric(component)){
+  if(!is.null(component) || is.numeric(component)){
     stop("'component' must be NULL or numeric")
   }
   peak_spectra = extrpf_peak_spectra(pfmodel = pfmodel,
