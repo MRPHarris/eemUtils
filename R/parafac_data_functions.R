@@ -269,7 +269,10 @@ extrpf_eems <- function(pfmodel){
 #'
 #' @export
 #'
-extrpf_peak_positions <- function(pfmodel, component = 1){
+extrpf_peak_positions <- function(pfmodel, component = NULL){
+  if(is.null(component) || is.numeric(component)){
+    stop("'component' must be NULL or numeric")
+  }
   peak_spectra = extrpf_peak_spectra(pfmodel = pfmodel,
                                      component = component)
   peakpositions = peak_spectra %>%
@@ -313,9 +316,9 @@ extrpf_peak_spectra <- function(pfmodel, component = 1){
     ungroup() %>%
     mutate_at(vars(ex, em, value, comp), as.numeric)# %>%
     # dplyr::filter(comp == component)
-  if(is.null(component)){
+  if(!is.null(component)){
     comp_spectra %>%
-    dplyr::filter(comp == component)
+      dplyr::filter(comp == component)
   }
   comp_spectra
 }
