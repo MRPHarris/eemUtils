@@ -4,7 +4,7 @@
 \alias{extrpf_peak_positions}
 \title{Return the ex/em position of the peak maxima for a PARAFAC modeled component.}
 \usage{
-extrpf_peak_positions(pfmodel, component = 1)
+extrpf_peak_positions(pfmodel, component = NULL)
 }
 \arguments{
 \item{pfmodel}{A PARAFAC model object.}
