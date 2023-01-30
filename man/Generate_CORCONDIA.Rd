@@ -4,7 +4,7 @@
 \alias{Generate_CORCONDIA}
 \title{Return a table of Core Consistency Diagnostic values for a given group of PARAFAC models}
 \usage{
-Generate_CORCONDIA(pfmodel, eemlist)
+Generate_CORCONDIA(pfmodel, eemlist, verbose = T, warning_threshold = 75)
 }
 \arguments{
 \item{pfmodel}{A group of PARAFAC model objects, typically outputs from staRdom::eem_parafac()}
