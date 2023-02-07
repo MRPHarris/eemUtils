@@ -649,6 +649,7 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
 #' @param sample the samplename of the EEM, if applicable.
 #' @param location the location of the EEM file, if applicable.
 #' @param gathered TRUE/FALSE is the eemdf in a short (not gathered; FALSE) or a long (gathered; TRUE) format?
+#' @param gathskip TRUE/FALSE to skip a column trimming step for gathered eem data frames (i.e. where gathered = TRUE). Setting this to TRUE may cause emission increments to be left out of output eems.
 #'
 #' @export
 #'
@@ -656,7 +657,8 @@ eemdf_to_eem <- function(eemdf,
                          file = NULL,
                          sample = NULL,
                          location = NULL,
-                         gathered = FALSE){
+                         gathered = FALSE,
+                         gathskip = FALSE){
   # code adapted from staRdom's .eem_csv importer.
   x <- eemdf
   if(!isTRUE(gathered)){
@@ -691,16 +693,17 @@ eemdf_to_eem <- function(eemdf,
     }
     rnames <- as.matrix(gath_df_short[,1])
     rownames(gath_df_short) <- as.numeric(rnames)
-    gath_df_short <- select(gath_df_short, -c(1))
+    if(!isTRUE(gathskip)){
+      gath_df_short <- select(gath_df_short, -c(1))
+    }
     eem <- eemdf_to_eem(eemdf = gath_df_short,
                         file = file,
                         sample = sample,
                         location = location,
-                        gathered = FALSE)
+                        gathered = FALSE) %>% 'class<-'(c('eem'))
     return(eem)
   }
 }
-
 #' Bin the intensity values from an EEM.
 #'
 #' @description Takes the intensity values of an EEM and bins them based upon a preset number of
