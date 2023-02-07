@@ -649,7 +649,7 @@ interpolate_eem <- function(eem, n_pp = 2, direction = "ex", verbose = FALSE){
 #' @param sample the samplename of the EEM, if applicable.
 #' @param location the location of the EEM file, if applicable.
 #' @param gathered TRUE/FALSE is the eemdf in a short (not gathered; FALSE) or a long (gathered; TRUE) format?
-#' @param gathskip TRUE/FALSE to skip a column trimming step for gathered eem data frames (i.e. where gathered = TRUE). Setting this to TRUE may cause emission increments to be left out of output eems.
+#' @param gathskip TRUE/FALSE to skip a column trimming step for gathered eem data frames (i.e. where gathered = TRUE). Setting this to FALSE may cause emission increments to be left out of output eems.
 #'
 #' @export
 #'
@@ -658,7 +658,7 @@ eemdf_to_eem <- function(eemdf,
                          sample = NULL,
                          location = NULL,
                          gathered = FALSE,
-                         gathskip = FALSE){
+                         gathrowskip = TRUE){
   # code adapted from staRdom's .eem_csv importer.
   x <- eemdf
   if(!isTRUE(gathered)){
@@ -693,7 +693,7 @@ eemdf_to_eem <- function(eemdf,
     }
     rnames <- as.matrix(gath_df_short[,1])
     rownames(gath_df_short) <- as.numeric(rnames)
-    if(!isTRUE(gathskip)){
+    if(!isTRUE(gathrowskip)){
       gath_df_short <- select(gath_df_short, -c(1))
     }
     eem <- eemdf_to_eem(eemdf = gath_df_short,

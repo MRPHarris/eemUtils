@@ -10,7 +10,7 @@ eemdf_to_eem(
   sample = NULL,
   location = NULL,
   gathered = FALSE,
-  gathskip = FALSE
+  gathrowskip = TRUE
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ eemdf_to_eem(
 
 \item{gathered}{TRUE/FALSE is the eemdf in a short (not gathered; FALSE) or a long (gathered; TRUE) format?}
 
-\item{gathskip}{TRUE/FALSE to skip a column trimming step for gathered eem data frames (i.e. where gathered = TRUE). Setting this to TRUE may cause emission increments to be left out of output eems.}
+\item{gathskip}{TRUE/FALSE to skip a column trimming step for gathered eem data frames (i.e. where gathered = TRUE). Setting this to FALSE may cause emission increments to be left out of output eems.}
 }
 \description{
 An alternative to eemR's eem constructor. Intended to reverse as.data.frame(eem).
