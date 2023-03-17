@@ -461,11 +461,12 @@ normalise_eemlist <- function(eemlist, type = 'max_eem_val', norm_log, norm_data
 #'
 #' @description Average the EEMs within an eemlist.
 #'
-#' @param eemlist A list of EEMs, compliant with the eemR/staRdom framework.
+#' @param eemlist A list of EEMs, compliant with the eemR/staRdom framework.'
+#' @param verbose TRUE/FALSEto show message at completion of operation.
 #'
 #' @export
 #'
-eemlist_average <- function(eemlist){
+eemlist_average <- function(eemlist, verbose = TRUE){
   if(length(eemlist) == 1){
     message("1 EEM passed to average_eems() for averaging. Returning unchanged.")
     new_eemlist <- eemlist
@@ -489,7 +490,9 @@ eemlist_average <- function(eemlist){
                                  location = "")
     new_eemlist <- vector(mode = "list",length = 1)
     class(new_eemlist) <- "eemlist"
-    message(paste0(length(eemlist)," EEMs passed to average_eems() for averaging."))
+    if(isTRUE(verbose)){
+      message(paste0(length(eemlist)," EEMs passed to average_eems() for averaging."))
+    }
     new_eemlist[[1]] <- averaged_eem
     return(new_eemlist)
   }

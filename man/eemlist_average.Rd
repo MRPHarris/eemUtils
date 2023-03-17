@@ -4,10 +4,12 @@
 \alias{eemlist_average}
 \title{Average a set of EEMs.}
 \usage{
-eemlist_average(eemlist)
+eemlist_average(eemlist, verbose = TRUE)
 }
 \arguments{
-\item{eemlist}{A list of EEMs, compliant with the eemR/staRdom framework.}
+\item{eemlist}{A list of EEMs, compliant with the eemR/staRdom framework.'}
+
+\item{verbose}{TRUE/FALSEto show message at completion of operation.}
 }
 \description{
 Average the EEMs within an eemlist.
