@@ -528,7 +528,10 @@ ggeem2.data.frame <- function(data,
         axis.title = element_text(size = 10*textsize_multiplier),
         legend.text = element_text(size = 9*textsize_multiplier),
         legend.title = element_text(size = 10*textsize_multiplier),
-        axis.ticks = element_line(colour = 'black')
+        axis.ticks = element_line(colour = 'black'),
+        axis.text.x = element_text(size = 9*textsize_multiplier,
+                                   colour = 'black',
+                                   angle = 90, vjust = 0.5)
       )
     #plot  <- plot +
     #  annotate(geom = "rect", xmin = min(eem_constructed$ex)-(x_slit_min/2), xmax = max(eem_constructed$ex)+(x_slit_max/2), ymin = min(eem_constructed$em)-(y_slit_min/2), ymax = max(eem_constructed$em)+(y_slit_max/2),
