@@ -1,5 +1,3 @@
-# Miscellaneous functions related to plotting that didn't match the other function compilation files
-
 #' A simple textsize scaler for ggplot objects.
 #'
 #' @description Takes a set of text size alteration numbers and modifies a ggplot. Useful
