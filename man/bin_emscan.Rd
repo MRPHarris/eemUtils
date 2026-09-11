@@ -7,7 +7,7 @@
 bin_emscan(em_spectra, pix_bins = 2, average = TRUE)
 }
 \arguments{
-\item{em_spectra}{a long-form (gathered) emission spectra. Takes the result from e.g., as.data.frame(eem) %>% filter(ex == 239)}
+\item{em_spectra}{a long-form (gathered) emission spectra.}
 
 \item{pix_bins}{number of adjacent emission increments (pixels on a CCD fluoromter) to group together.}
 }

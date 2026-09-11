@@ -2,7 +2,7 @@
 #'
 #' @description Average adjacent emission pixels to reduce noise in an emission spectra.
 #'
-#' @param em_spectra a long-form (gathered) emission spectra. Takes the result from e.g., as.data.frame(eem) %>% filter(ex == 239)
+#' @param em_spectra a long-form (gathered) emission spectra.
 #' @param pix_bins number of adjacent emission increments (pixels on a CCD fluoromter) to group together.
 #'
 #' @importFrom magrittr %>%
