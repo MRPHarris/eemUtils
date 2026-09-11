@@ -18,5 +18,6 @@ eemlist_bin_emission <- function(eemlist, pix_bins = 2, verbose = TRUE){
   # eemlist_binned <- lapply(eemlist, function(x){
   #   eem_bin_emission(x, pix_bins = pix_bins)
   # })
-  eemlist_binned
+  eemlist_binned %>% 'class<-'(c('eemlist'))
+  return(eemlist_binned)
 }

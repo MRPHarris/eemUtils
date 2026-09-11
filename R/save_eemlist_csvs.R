@@ -9,10 +9,12 @@
 #'
 #' @export
 #'
-save_eemlist_csvs <- function(eemlist,outputfolder = NULL, append_name = NULL){
+save_eemlist_csvs <- function(eemlist, outputfolder = NULL, append_name = NULL){
   if(is.null(outputfolder)){
     output_dir <- getwd()
     message("No outputfolder specified; exporting to working directory")
+  } else {
+    dir.create(outputfolder)
   }
   if(!is.null(append_name)){
     append_name = paste0("_",append_name)
